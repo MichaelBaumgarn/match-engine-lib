@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import LobbyService from "../src/core/LobbyService";
+import LobbyService, { LobbyStatusEnum } from "../src/core/LobbyService";
 import PlayerType from "../src/models/Player";
 
 const player1: PlayerType = {
@@ -38,6 +38,7 @@ describe("match-engine-lib", () => {
 
     service.addPlayer(player3);
     service.addPlayer(player4);
+    expect(service.status).toBe(LobbyStatusEnum.CONFIRMED);
     expect(service.players.length).toBe(4);
     expect(() => service.addPlayer(player5)).toThrow();
   });

@@ -6,11 +6,17 @@ export const LOBBY_ERRORS = {
   PLAYER_NOT_FOUND: "player was not found",
 };
 
+export enum LobbyStatusEnum {
+  OPEN = "open",
+  CONFIRMED = "confirmed",
+}
+
 class LobbyService {
   id: number;
   createdBy: PlayerType;
   maxPlayers: number = 4;
   players: PlayerType[];
+  status: LobbyStatusEnum = LobbyStatusEnum.OPEN;
 
   constructor(id: number, createdBy: PlayerType) {
     this.id = id;
@@ -25,6 +31,10 @@ class LobbyService {
       throw new Error(LOBBY_ERRORS.PLAYER_EXISTS_ALREADY);
 
     this.players.push(player);
+
+    if (this.players.length === 4) {
+      this.status = LobbyStatusEnum.CONFIRMED;
+    }
     return true;
   }
 
