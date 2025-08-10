@@ -1,0 +1,8 @@
+# Standard Node/npm
+node_modules/
+dist/
+*.log
+
+# Vite/Vitest-specific cache
+.vite/
+coverage/

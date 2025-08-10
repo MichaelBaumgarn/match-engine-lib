@@ -1,0 +1,23 @@
+{
+  "name": "match-engine-lib",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vitest --watch",
+    "test": "vitest run",
+    "build": "tsup src/index.ts --dts --format esm,cjs --out-dir dist"
+  },
+  "vitest": {
+    "globals": true,
+    "environment": "node"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}
