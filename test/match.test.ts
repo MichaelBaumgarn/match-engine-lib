@@ -26,20 +26,20 @@ let player5: PlayerType = {
 describe("match-engine-lib", () => {
   it("can add player", () => {
     let service = new LobbyService(1, player1);
-    service.addPlayer(player2);
+    service.addPlayer(player2, "left");
 
-    expect(service.players.length).toBe(2);
-    expect(() => service.addPlayer(player2)).toThrow();
+    expect(service.leftSideSlots.length).toBe(2);
+    expect(() => service.addPlayer(player2, "left")).toThrow();
 
     service.removePlayer(player2);
-    service.addPlayer(player2);
+    service.addPlayer(player2, "left");
 
-    expect(service.players.length).toBe(2);
+    expect(service.leftSideSlots.length).toBe(2);
 
-    service.addPlayer(player3);
-    service.addPlayer(player4);
+    service.addPlayer(player3, "right");
+    service.addPlayer(player4, "right");
     expect(service.status).toBe(LobbyStatusEnum.CONFIRMED);
-    expect(service.players.length).toBe(4);
-    expect(() => service.addPlayer(player5)).toThrow();
+    expect(service.getAllPlayers().length).toBe(4);
+    expect(() => service.addPlayer(player5, "left")).toThrow();
   });
 });
