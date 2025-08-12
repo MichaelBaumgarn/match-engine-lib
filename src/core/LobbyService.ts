@@ -35,7 +35,7 @@ class LobbyService {
     );
   }
 
-  getAllPlayers() {
+  get getAllPlayers() {
     return [...this.leftSideSlots, ...this.rightSideSlots];
   }
 
@@ -71,7 +71,7 @@ class LobbyService {
   }
 
   hasPlayer(player: PlayerType) {
-    return this.getAllPlayers().find(
+    return this.getAllPlayers.find(
       (presentPlayer) => player.id === presentPlayer.id
     );
   }

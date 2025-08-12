@@ -39,7 +39,7 @@ describe("match-engine-lib", () => {
     service.addPlayer(player3, "right");
     service.addPlayer(player4, "right");
     expect(service.status).toBe(LobbyStatusEnum.CONFIRMED);
-    expect(service.getAllPlayers().length).toBe(4);
+    expect(service.getAllPlayers.length).toBe(4);
     expect(() => service.addPlayer(player5, "left")).toThrow();
   });
 });
