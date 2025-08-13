@@ -1,11 +1,14 @@
-import { Entity, PrimaryColumn, Column, OneToMany } from "typeorm";
-import { SideSlotEntity } from "./SideSlotEntity";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity("players")
 export class PlayerEntity {
-  @PrimaryColumn()
-  id!: number;
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
 
-  @Column()
+  @Column({ type: "text" })
   name!: string;
+
+  // Optional: If you add rank, rating, etc later:
+  // @Column({ type: 'integer', nullable: true })
+  // rating?: number;
 }

@@ -1,17 +1,26 @@
-import { Entity, PrimaryColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { SideSlotEntity } from "./SideSlotEntity";
 
 @Entity("lobbies")
 export class LobbyEntity {
-  @PrimaryColumn()
-  id!: number;
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
 
-  @Column()
-  createdBy!: number;
+  @Column({ type: "uuid" })
+  createdBy!: string;
 
-  @Column()
-  status!: string;
+  @Column({ type: "text" })
+  status!: "open" | "confirmed";
 
-  @OneToMany(() => SideSlotEntity, (slot) => slot.lobby, { cascade: true })
+  @Column({ type: "integer", default: 2 })
+  maxPlayersBySide!: number;
+
+  @Column({ type: "timestamptz", default: () => "now()" })
+  createdAt!: Date;
+
+  @Column({ type: "timestamptz", default: () => "now()" })
+  updatedAt!: Date;
+
+  @OneToMany(() => SideSlotEntity, (sideSlot) => sideSlot.lobby)
   sideSlots!: SideSlotEntity[];
 }

@@ -12,13 +12,13 @@ export class SideSlotEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ type: "integer" })
   playerId!: number;
 
-  @Column()
+  @Column({ type: "text" })
   side!: "left" | "right";
 
-  @Column()
+  @Column({ type: "integer" })
   lobbyId!: number;
 
   @ManyToOne(() => LobbyEntity, (lobby) => lobby.sideSlots)

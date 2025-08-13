@@ -1,31 +1,32 @@
 import { describe, it, expect } from "vitest";
 import LobbyService, { LobbyStatusEnum } from "../src/core/LobbyService";
 import PlayerType from "../src/models/Player";
+import "reflect-metadata";
 
 const player1: PlayerType = {
-  id: 1,
+  id: crypto.randomUUID(),
   name: "A",
 };
 let player2: PlayerType = {
-  id: 3,
+  id: crypto.randomUUID(),
   name: "B",
 };
 let player3: PlayerType = {
-  id: 4,
+  id: crypto.randomUUID(),
   name: "C",
 };
 let player4: PlayerType = {
-  id: 5,
+  id: crypto.randomUUID(),
   name: "D",
 };
 let player5: PlayerType = {
-  id: 6,
+  id: crypto.randomUUID(),
   name: "F",
 };
 
 describe("match-engine-lib", () => {
   it("can add player", () => {
-    let service = new LobbyService(1, player1);
+    let service = new LobbyService(crypto.randomUUID(), player1);
     service.addPlayer(player2, "left");
 
     expect(service.leftSideSlots.length).toBe(2);

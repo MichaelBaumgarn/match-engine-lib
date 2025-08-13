@@ -14,14 +14,14 @@ export enum LobbyStatusEnum {
 export type Side = "left" | "right";
 
 class LobbyService {
-  id: number;
+  id: string;
   createdBy: PlayerType;
   maxPlayersBySide: number = 2;
   leftSideSlots: PlayerType[];
   rightSideSlots: PlayerType[] = [];
   status: LobbyStatusEnum = LobbyStatusEnum.OPEN;
 
-  constructor(id: number, createdBy: PlayerType) {
+  constructor(id: string, createdBy: PlayerType) {
     this.id = id;
     this.createdBy = createdBy;
     this.leftSideSlots = [createdBy];

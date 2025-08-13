@@ -1,16 +1,17 @@
 import { DataSource } from "typeorm";
 import { LobbyEntity } from "../entities/LobbyEntity";
-import { SideSlotEntity } from "../entities/SideSlotEntity";
 import { PlayerEntity } from "../entities/PlayerEntity";
+import { SideSlotEntity } from "../entities/SideSlotEntity";
 
-export const AppDataSource = new DataSource({
+export const TestDataSource = new DataSource({
   type: "postgres",
   host: "localhost",
   port: 54323,
   username: "postgres",
   password: "postgres",
   database: "match-store",
-  synchronize: false, // ⚠️ use only for dev
-  logging: false,
+  synchronize: true, // only for test DB
+  dropSchema: true, // clears tables between test runs
   entities: [LobbyEntity, PlayerEntity, SideSlotEntity], // ✅ add all here
+  logging: false,
 });

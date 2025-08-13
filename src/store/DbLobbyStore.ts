@@ -10,15 +10,15 @@ export class DbLobbyStore implements LobbyStore {
     repo.save(lobbyEntity);
   }
 
-  async getLobby(id: number): Promise<LobbyService | null> {
+  async getLobby(id: string): Promise<LobbyService | null> {
     const repo = AppDataSource.getRepository(LobbyEntity);
-    const entity = await repo.findOne({ where: { id } });
+    const entity = await repo.findOne({ where: { id: id } });
     if (!entity) return null;
 
     return entityToLobbyService(entity);
   }
 
-  async deleteLobby(id: number): Promise<void> {
+  async deleteLobby(id: string): Promise<void> {
     const repo = AppDataSource.getRepository(LobbyEntity);
     repo.delete(id);
   }
