@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import LobbyService, { LobbyStatusEnum } from "../src/core/LobbyService";
+import LobbyService, { LobbyStatusEnum, LOBBY_ERRORS } from "../src/core/LobbyService";
 import PlayerType from "../src/models/Player";
 import "reflect-metadata";
 
@@ -42,5 +42,13 @@ describe("match-engine-lib", () => {
     expect(service.status).toBe(LobbyStatusEnum.CONFIRMED);
     expect(service.getAllPlayers.length).toBe(4);
     expect(() => service.addPlayer(player5, "left")).toThrow();
+  });
+
+  it("throws when adding player to a side that is full", () => {
+    const service = new LobbyService(crypto.randomUUID(), player1);
+    service.addPlayer(player2, "left");
+    expect(() => service.addPlayer(player3, "left")).toThrowError(
+      LOBBY_ERRORS.LOBBY_FULL
+    );
   });
 });
