@@ -12,7 +12,10 @@ export class DbLobbyStore implements LobbyStore {
 
   async getLobby(id: number): Promise<LobbyService | null> {
     const repo = AppDataSource.getRepository(LobbyEntity);
-    return repo.findOne({ where: { id } }).then((r) => entityToLobbyService(r));
+    const entity = await repo.findOne({ where: { id } });
+    if (!entity) return null;
+
+    return entityToLobbyService(entity);
   }
 
   async deleteLobby(id: number): Promise<void> {
