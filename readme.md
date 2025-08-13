@@ -33,20 +33,17 @@ npm install
 ## 🛠 Usage Example
 
 ```ts
-import { LobbyService } from "match-engine-lib";
-import { InMemoryLobbyStore } from "match-engine-lib/adapters";
+import LobbyService, { LobbyStatusEnum } from "match-engine-lib/core/LobbyService";
+import Player from "match-engine-lib/models/Player";
 
-const store = new InMemoryLobbyStore();
-const service = new LobbyService(store);
+const host: Player = { id: "player1", name: "Anna" };
+const lobby = new LobbyService("abc123", host);
 
-await service.createLobby({
-  id: "abc123",
-  createdBy: "player1",
-  maxPlayers: 4,
-  players: [],
-});
+lobby.addPlayer({ id: "player2", name: "Bob" }, "right");
+lobby.addPlayer({ id: "player3", name: "Cara" }, "left");
+lobby.addPlayer({ id: "player4", name: "Dan" }, "right");
 
-await service.joinLobby("abc123", { id: "player2", name: "Anna" });
+console.log(lobby.status); // LobbyStatusEnum.CONFIRMED
 ```
 
 ---
@@ -81,6 +78,33 @@ src/
 ├── models/         # Domain models (Lobby, Player, etc.)
 ├── ports/          # Interface contracts (e.g. LobbyStore)
 └── index.ts        # Entry point / public API
+```
+
+---
+
+## 🧑‍💻 Development
+
+After cloning the repository, install dependencies with `npm install`.
+
+### Running tests
+
+```bash
+npm test       # Run all tests once
+npm run dev    # Watch tests
+```
+
+### Building
+
+```bash
+npm run build
+```
+
+### Optional: Postgres for adapters
+
+If you want to experiment with a database-backed lobby store, a Postgres service is defined in `docker-compose.yml`:
+
+```bash
+docker-compose up -d postgres
 ```
 
 ---
