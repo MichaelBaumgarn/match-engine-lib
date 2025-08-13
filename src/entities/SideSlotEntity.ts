@@ -12,8 +12,8 @@ export class SideSlotEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: "integer" })
-  playerId!: number;
+  @Column({ type: "uuid" })
+  playerId!: string;
 
   @Column({ type: "text" })
   side!: "left" | "right";

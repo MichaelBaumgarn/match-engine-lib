@@ -2,6 +2,7 @@ import { beforeAll, afterAll, describe, it, expect } from "vitest";
 import { TestDataSource } from "../src/db/test-data-source";
 import { LobbyEntity } from "../src/entities/LobbyEntity";
 import { PlayerEntity } from "../src/entities/PlayerEntity";
+import { SideSlotEntity } from "../src/entities/SideSlotEntity";
 import "reflect-metadata";
 
 describe("LobbyEntity CRUD", () => {
@@ -50,5 +51,30 @@ describe("LobbyEntity CRUD", () => {
 
     const found = await repo.findOneBy({ id: lobby.id });
     expect(found).toBeNull();
+  });
+
+  it("should create a side slot with a UUID playerId", async () => {
+    const playerRepo = TestDataSource.getRepository(PlayerEntity);
+    const lobbyRepo = TestDataSource.getRepository(LobbyEntity);
+    const sideRepo = TestDataSource.getRepository(SideSlotEntity);
+
+    const player = playerRepo.create({ name: "Slot Player" });
+    await playerRepo.save(player);
+
+    const lobby = lobbyRepo.create({
+      createdBy: player.id,
+      status: "open",
+    });
+    await lobbyRepo.save(lobby);
+
+    const sideSlot = sideRepo.create({
+      playerId: player.id,
+      side: "left",
+      lobbyId: lobby.id,
+    });
+
+    await sideRepo.save(sideSlot);
+    const savedSlot = await sideRepo.findOneByOrFail({ id: sideSlot.id });
+    expect(savedSlot.playerId).toBe(player.id);
   });
 });
