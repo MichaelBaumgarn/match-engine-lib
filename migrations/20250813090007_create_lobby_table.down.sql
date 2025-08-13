@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS lobby_players;
+DROP TABLE IF EXISTS lobbies;
+DROP TABLE IF EXISTS players;

@@ -16,7 +16,6 @@ export type Side = "left" | "right";
 class LobbyService {
   id: number;
   createdBy: PlayerType;
-  maxPlayers: number = 4;
   maxPlayersBySide: number = 2;
   leftSideSlots: PlayerType[];
   rightSideSlots: PlayerType[] = [];

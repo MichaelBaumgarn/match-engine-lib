@@ -1,4 +1,6 @@
 import { DataSource } from "typeorm";
+import { LobbyEntity } from "../entities/LobbyEntity";
+import { SideSlotEntity } from "../entities/SideSlotEntity";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
