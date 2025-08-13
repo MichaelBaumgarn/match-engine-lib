@@ -46,9 +46,11 @@ class LobbyService {
     const targetSide =
       side == "left" ? this.leftSideSlots : this.rightSideSlots;
 
-    if (targetSide.length < this.maxPlayersBySide) {
-      targetSide.push(player);
+    if (targetSide.length >= this.maxPlayersBySide) {
+      throw new Error(LOBBY_ERRORS.LOBBY_FULL);
     }
+
+    targetSide.push(player);
 
     if (this.isFull()) {
       this.status = LobbyStatusEnum.CONFIRMED;
