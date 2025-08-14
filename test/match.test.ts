@@ -1,7 +1,11 @@
 import { describe, it, expect } from "vitest";
-import LobbyService, { LobbyStatusEnum, LOBBY_ERRORS } from "../src/core/LobbyService";
+import LobbyService, {
+  LobbyStatusEnum,
+  LOBBY_ERRORS,
+} from "../src/core/LobbyService";
 import PlayerType from "../src/models/Player";
 import "reflect-metadata";
+import crypto from "crypto";
 
 const player1: PlayerType = {
   id: crypto.randomUUID(),
