@@ -70,7 +70,6 @@ describe("LobbyEntity CRUD", () => {
     const sideSlot = sideRepo.create({
       playerId: player.id,
       side: "left",
-      lobbyId: lobby.id,
     });
 
     await sideRepo.save(sideSlot);
