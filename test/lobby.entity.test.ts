@@ -4,6 +4,33 @@ import { LobbyEntity } from "../src/entities/LobbyEntity";
 import { PlayerEntity } from "../src/entities/PlayerEntity";
 import { SideSlotEntity } from "../src/entities/SideSlotEntity";
 import "reflect-metadata";
+import { InMemoryLobbyStore } from "../src/store/InMemoryLobbyStore";
+import { DbLobbyStore } from "../src/store/DbLobbyStore";
+import LobbyService, { LOBBY_ERRORS } from "../src/core/LobbyService";
+import PlayerType from "../src/models/Player";
+import crypto from "crypto";
+import { DataSource, EntityManager } from "typeorm";
+
+const player1: PlayerType = {
+  id: crypto.randomUUID(),
+  name: "A",
+};
+let player2: PlayerType = {
+  id: crypto.randomUUID(),
+  name: "B",
+};
+let player3: PlayerType = {
+  id: crypto.randomUUID(),
+  name: "C",
+};
+let player4: PlayerType = {
+  id: crypto.randomUUID(),
+  name: "D",
+};
+let player5: PlayerType = {
+  id: crypto.randomUUID(),
+  name: "F",
+};
 
 describe("LobbyEntity CRUD", () => {
   beforeAll(async () => {
@@ -70,6 +97,7 @@ describe("LobbyEntity CRUD", () => {
     const sideSlot = sideRepo.create({
       playerId: player.id,
       side: "left",
+      lobbyId: lobby.id,
     });
 
     await sideRepo.save(sideSlot);

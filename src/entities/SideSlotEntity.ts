@@ -19,7 +19,7 @@ export class SideSlotEntity {
   side!: "left" | "right";
 
   @Column({ type: "integer" })
-  lobbyId!: number;
+  lobbyId!: string;
 
   @ManyToOne(() => LobbyEntity, (lobby) => lobby.sideSlots)
   @JoinColumn({ name: "lobbyId" })
