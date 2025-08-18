@@ -62,7 +62,12 @@ function lobbyServiceToEntity(service: LobbyService): LobbyEntity {
 function entityToLobbyService(entity: LobbyEntity): LobbyService {
   // Avoid duplicating creator: rebuild arrays explicitly
   const creator = { id: entity.createdBy, name: "?" };
-  const svc = new LobbyService(entity.id, creator);
+  const svc = new LobbyService(
+    entity.id,
+    creator,
+    entity.startAt,
+    entity.durationMinutes
+  );
   svc.status = entity.status as LobbyStatusEnum;
 
   // reset the arrays so we don't keep the constructor's default

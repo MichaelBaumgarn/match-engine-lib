@@ -53,6 +53,9 @@ describe("LobbyEntity CRUD", () => {
     const lobby = lobbyRepo.create({
       createdBy: player.id,
       status: "open",
+      visibility: "public",
+      startAt: new Date(),
+      durationMinutes: 90,
     });
     await lobbyRepo.save(lobby);
 
@@ -91,6 +94,9 @@ describe("LobbyEntity CRUD", () => {
     const lobby = lobbyRepo.create({
       createdBy: player.id,
       status: "open",
+      visibility: "public",
+      durationMinutes: 90,
+      startAt: new Date(),
     });
     await lobbyRepo.save(lobby);
 

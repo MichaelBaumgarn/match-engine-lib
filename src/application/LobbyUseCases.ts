@@ -55,13 +55,24 @@ export class LobbyUseCases {
     }
   }
 
-  async createLobby(lobbyId: string, creator: Player): Promise<LobbyService> {
+  async createLobby(
+    lobbyId: string,
+    creator: Player,
+    startAt: Date,
+    durationMinutes: number
+  ): Promise<LobbyService> {
     const qr = this.ds.createQueryRunner();
     await qr.connect();
     await qr.startTransaction();
     try {
       const store = new DbLobbyStore(qr.manager);
-      const lobby = new LobbyService(lobbyId, creator);
+      const lobby = new LobbyService(
+        lobbyId,
+        creator,
+        startAt,
+
+        durationMinutes
+      );
       await store.saveLobby(lobby);
       await qr.commitTransaction();
       return lobby;

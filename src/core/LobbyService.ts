@@ -12,6 +12,7 @@ export enum LobbyStatusEnum {
 }
 
 export type Side = "left" | "right";
+export type Visibility = "private" | "invite" | "public";
 
 class LobbyService {
   id: string;
@@ -20,11 +21,23 @@ class LobbyService {
   leftSideSlots: PlayerType[];
   rightSideSlots: PlayerType[] = [];
   status: LobbyStatusEnum = LobbyStatusEnum.OPEN;
+  startAt: Date;
+  durationMinutes: number = 90;
+  visibility: Visibility = "public";
 
-  constructor(id: string, createdBy: PlayerType) {
+  constructor(
+    id: string,
+    createdBy: PlayerType,
+    startAt: Date,
+    durationMinutes?: number
+  ) {
     this.id = id;
     this.createdBy = createdBy;
     this.leftSideSlots = [createdBy];
+    this.startAt = startAt;
+    if (durationMinutes) {
+      this.durationMinutes = durationMinutes;
+    }
   }
 
   isFull() {

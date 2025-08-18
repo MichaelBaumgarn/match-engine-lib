@@ -25,8 +25,16 @@ export default function lobbiesRouter(ds: DataSource) {
 
       const lobbyId: string = req.body.lobbyId ?? crypto.randomUUID();
       const creator: Player = { id: creatorId, name: "?" };
+      const startAt: Date = req.body.startAt;
+      const durationMinutes: number = req.body.durationMinutes;
+      if (!startAt) return res.status(400).json({ error: "startAt required" });
 
-      const lobby = await useCases.createLobby(lobbyId, creator);
+      const lobby = await useCases.createLobby(
+        lobbyId,
+        creator,
+        startAt,
+        durationMinutes
+      );
       res.status(201).json(serializeLobby(lobby));
     })
   );

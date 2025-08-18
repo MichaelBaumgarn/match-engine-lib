@@ -29,7 +29,7 @@ export class LobbyEntity {
   startAt!: Date;
 
   @Column({ type: "integer" })
-  duration_minutes!: Date;
+  durationMinutes!: number;
 
   @ManyToOne(() => ClubEntity, (club) => club.lobbies)
   club!: ClubEntity;

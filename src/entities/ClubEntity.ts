@@ -13,13 +13,13 @@ export class ClubEntity {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ type: "string" })
+  @Column({ type: "text" })
   name!: string;
 
-  @Column({ type: "string" })
+  @Column({ type: "text" })
   address!: string;
 
-  @Column({ type: "string" })
+  @Column({ type: "text" })
   city!: string;
 
   @OneToMany(() => LobbyEntity, (lobby) => lobby.club)
