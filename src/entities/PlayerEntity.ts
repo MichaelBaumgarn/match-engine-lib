@@ -8,7 +8,12 @@ export class PlayerEntity {
   @Column({ type: "text" })
   name!: string;
 
-  // Optional: If you add rank, rating, etc later:
-  // @Column({ type: 'integer', nullable: true })
-  // rating?: number;
+  @Column({ type: "text", nullable: true })
+  skillLevel?: string;
+
+  @Column({ type: "text", nullable: true })
+  profilePicture?: string;
+
+  @Column({ type: "text", nullable: true })
+  city?: string;
 }

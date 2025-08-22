@@ -5,8 +5,7 @@ import crypto from "crypto";
 import LobbyService, { Side } from "../core/LobbyService";
 import { DbLobbyStore } from "../store/DbLobbyStore";
 import { LobbyUseCases } from "../application/LobbyUseCases";
-
-type Player = { id: string; name: string };
+import Player from "../models/Player";
 
 const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
   Promise.resolve(fn(req, res, next)).catch(next);
