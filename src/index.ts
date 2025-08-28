@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import { AppDataSource } from "./db/data-source";
 import lobbiesRouter from "./routes/lobbies";
+import { clubRouter } from "./routes/clubs";
+import { playerRouter } from "./routes/players";
 
 export async function createApp() {
   if (!AppDataSource.isInitialized) {
@@ -13,6 +15,8 @@ export async function createApp() {
   app.use(express.json());
 
   app.use("/lobbies", lobbiesRouter(AppDataSource));
+  app.use("/players", playerRouter(AppDataSource));
+  app.use("/clubs", clubRouter(AppDataSource));
 
   // Global error handler
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
