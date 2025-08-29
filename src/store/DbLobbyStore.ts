@@ -41,6 +41,28 @@ export class DbLobbyStore {
     const rows = await repo.find({ relations: { sideSlots: true } });
     return rows.map(entityToLobbyService);
   }
+
+  async listLobbiesWithPlayerDetails(): Promise<LobbyService[]> {
+    const repo = this.manager.getRepository(LobbyEntity);
+    const rows = await repo.find({
+      relations: {
+        sideSlots: true,
+      },
+    });
+
+    // For now, return the same as listLobbies since we need to implement player fetching
+    // TODO: Implement proper player data fetching
+    return rows.map(entityToLobbyService);
+  }
+
+  async getLobbyWithPlayerDetails(id: string): Promise<LobbyService | null> {
+    const repo = this.manager.getRepository(LobbyEntity);
+    const entity = await repo.findOne({
+      where: { id },
+      relations: { sideSlots: true },
+    });
+    return entity ? entityToLobbyService(entity) : null;
+  }
 }
 
 function lobbyServiceToEntity(service: LobbyService): LobbyEntity {

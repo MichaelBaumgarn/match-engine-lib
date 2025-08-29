@@ -1,4 +1,4 @@
-import { EntityManager } from "typeorm";
+import { EntityManager, In } from "typeorm";
 import { PlayerEntity } from "../entities/PlayerEntity";
 
 export interface Player {
@@ -38,6 +38,17 @@ export class DbPlayerStore {
     const repo = this.manager.getRepository(PlayerEntity);
     const all = await repo.find();
     return all.map(entityToPlayer);
+  }
+
+  async getPlayersByIds(playerIds: string[]): Promise<Player[]> {
+    if (playerIds.length === 0) return [];
+
+    const repo = this.manager.getRepository(PlayerEntity);
+    const players = await repo.find({
+      where: { id: In(playerIds) },
+    });
+
+    return players.map(entityToPlayer);
   }
 }
 

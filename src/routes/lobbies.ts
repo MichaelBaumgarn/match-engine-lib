@@ -6,6 +6,7 @@ import LobbyService, { Side } from "../core/LobbyService";
 import { DbLobbyStore } from "../store/DbLobbyStore";
 import { LobbyUseCases } from "../application/LobbyUseCases";
 import Player from "../models/Player";
+import { DbPlayerStore } from "../store/DbPlayerStore";
 
 const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
   Promise.resolve(fn(req, res, next)).catch(next);
@@ -43,9 +44,16 @@ export default function lobbiesRouter(ds: DataSource) {
     "/:id",
     asyncHandler(async (req: Request, res: Response) => {
       const store = new DbLobbyStore(ds.manager);
+      const playerStore = new DbPlayerStore(ds.manager);
       const lobby = await store.getLobby(req.params.id);
       if (!lobby) return res.status(404).json({ error: "Lobby not found" });
-      res.json(serializeLobby(lobby));
+
+      // Always include player details for individual lobby view
+      const lobbyWithDetails = await serializeLobbyWithPlayerDetails(
+        lobby,
+        playerStore
+      );
+      res.json(lobbyWithDetails);
     })
   );
 
@@ -54,8 +62,22 @@ export default function lobbiesRouter(ds: DataSource) {
     "/",
     asyncHandler(async (req: Request, res: Response) => {
       const store = new DbLobbyStore(ds.manager);
+      const playerStore = new DbPlayerStore(ds.manager);
       const lobbies = await store.listLobbies();
-      res.json(lobbies.map(serializeLobby));
+
+      // Check if client wants detailed player info
+      const includePlayers = req.query.includePlayers === "true";
+
+      if (includePlayers) {
+        const lobbiesWithDetails = await Promise.all(
+          lobbies.map((lobby) =>
+            serializeLobbyWithPlayerDetails(lobby, playerStore)
+          )
+        );
+        res.json(lobbiesWithDetails);
+      } else {
+        res.json(lobbies.map(serializeLobby));
+      }
     })
   );
 
@@ -115,5 +137,46 @@ function serializeLobby(lobby: LobbyService) {
     rightSide: lobby.rightSideSlots.map((p) => p.id),
     players: lobby.getAllPlayers.map((p) => p.id),
     createdBy: lobby.createdBy.id,
+  };
+}
+
+// Enhanced serialization with player details
+async function serializeLobbyWithPlayerDetails(
+  lobby: LobbyService,
+  playerStore: DbPlayerStore
+) {
+  const allPlayerIds = lobby.getAllPlayers.map((p) => p.id);
+  const players = await playerStore.getPlayersByIds(allPlayerIds);
+  const playerMap = new Map(players.map((p) => [p.id, p]));
+
+  const leftSidePlayers = lobby.leftSideSlots.map((p) => {
+    const player = playerMap.get(p.id);
+    return player || { id: p.id, name: "Unknown Player" };
+  });
+
+  const rightSidePlayers = lobby.rightSideSlots.map((p) => {
+    const player = playerMap.get(p.id);
+    return player || { id: p.id, name: "Unknown Player" };
+  });
+
+  const creator = playerMap.get(lobby.createdBy.id) || {
+    id: lobby.createdBy.id,
+    name: "Unknown Player",
+  };
+
+  return {
+    id: lobby.id,
+    status: lobby.status,
+    leftSide: leftSidePlayers,
+    rightSide: rightSidePlayers,
+    players: players,
+    createdBy: creator,
+    startAt: lobby.startAt,
+    durationMinutes: lobby.durationMinutes,
+    playerCount: {
+      left: lobby.leftSideSlots.length,
+      right: lobby.rightSideSlots.length,
+      total: lobby.getAllPlayers.length,
+    },
   };
 }
