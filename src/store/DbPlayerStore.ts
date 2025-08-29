@@ -6,6 +6,8 @@ export interface Player {
   name: string;
   skillLevel?: string | null;
   profilePicture?: string | null;
+  supabaseId?: string | null;
+  email?: string | null;
 }
 
 export class DbPlayerStore {
@@ -20,6 +22,12 @@ export class DbPlayerStore {
   async getById(id: string): Promise<Player | null> {
     const repo = this.manager.getRepository(PlayerEntity);
     const entity = await repo.findOneBy({ id });
+    return entity ? entityToPlayer(entity) : null;
+  }
+
+  async getBySupabaseId(supabaseId: string): Promise<Player | null> {
+    const repo = this.manager.getRepository(PlayerEntity);
+    const entity = await repo.findOneBy({ supabaseId });
     return entity ? entityToPlayer(entity) : null;
   }
 
@@ -58,6 +66,8 @@ function entityToPlayer(entity: PlayerEntity): Player {
     name: entity.name,
     skillLevel: entity.skillLevel ?? null,
     profilePicture: entity.profilePicture ?? null,
+    supabaseId: entity.supabaseId ?? null,
+    email: entity.email ?? null,
   };
 }
 

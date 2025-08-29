@@ -16,4 +16,10 @@ export class PlayerEntity {
 
   @Column({ type: "text", nullable: true })
   city?: string;
+
+  @Column({ type: "text", nullable: true, unique: true })
+  supabaseId?: string;
+
+  @Column({ type: "text", nullable: true, unique: true })
+  email?: string;
 }
