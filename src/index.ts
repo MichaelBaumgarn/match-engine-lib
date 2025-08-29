@@ -14,6 +14,36 @@ export async function createApp() {
   app.use(cors());
   app.use(express.json());
 
+  // Request logging middleware
+  app.use((req, res, next) => {
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] ${req.method} ${req.path} - ${req.ip}`);
+
+    // Log request body for POST/PUT requests
+    if (
+      ["POST", "PUT", "PATCH"].includes(req.method) &&
+      req.body &&
+      Object.keys(req.body).length > 0
+    ) {
+      console.log(
+        `[${timestamp}] Request Body:`,
+        JSON.stringify(req.body, null, 2)
+      );
+    }
+
+    // Log response status
+    const originalSend = res.send;
+    res.send = function (data) {
+      console.log(`[${timestamp}] Response Status: ${res.statusCode}`);
+      if (res.statusCode >= 400) {
+        console.log(`[${timestamp}] Error Response:`, data);
+      }
+      return originalSend.call(this, data);
+    };
+
+    next();
+  });
+
   app.use("/lobbies", lobbiesRouter(AppDataSource));
   app.use("/players", playerRouter(AppDataSource));
   app.use("/clubs", clubRouter(AppDataSource));
@@ -39,7 +69,7 @@ export async function createApp() {
 // If you want a standalone server:
 if (require.main === module) {
   createApp().then((app) => {
-    const port = process.env.PORT ?? 3000;
+    const port = process.env.PORT ?? 8080;
     app.listen(port, () => console.log(`HTTP listening on :${port}`));
   });
 }

@@ -18,10 +18,10 @@ export class SideSlotEntity {
   @Column({ type: "text" })
   side!: "left" | "right";
 
-  @Column({ type: "integer" })
+  @Column({ type: "uuid" })
   lobbyId!: string;
 
   @ManyToOne(() => LobbyEntity, (lobby) => lobby.sideSlots)
-  @JoinColumn({ name: "lobbyId" })
+  @JoinColumn({ name: "lobby_id" })
   lobby!: LobbyEntity;
 }

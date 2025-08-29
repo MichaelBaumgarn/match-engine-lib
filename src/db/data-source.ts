@@ -1,4 +1,5 @@
 import { DataSource } from "typeorm";
+import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { LobbyEntity } from "../entities/LobbyEntity";
 import { SideSlotEntity } from "../entities/SideSlotEntity";
 import { PlayerEntity } from "../entities/PlayerEntity";
@@ -14,4 +15,5 @@ export const AppDataSource = new DataSource({
   synchronize: false, // ⚠️ use only for dev
   logging: false,
   entities: [LobbyEntity, PlayerEntity, SideSlotEntity, ClubEntity], // ✅ add all here
+  namingStrategy: new SnakeNamingStrategy(),
 });

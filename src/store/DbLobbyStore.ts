@@ -8,8 +8,18 @@ export class DbLobbyStore {
 
   async saveLobby(lobby: LobbyService): Promise<void> {
     const repo = this.manager.getRepository(LobbyEntity);
+    const sideSlotRepo = this.manager.getRepository(SideSlotEntity);
+
+    // First, delete existing side slots for this lobby
+    await sideSlotRepo.delete({ lobbyId: lobby.id });
+
     const lobbyEntity = lobbyServiceToEntity(lobby);
-    await repo.save(lobbyEntity); // await!
+    await repo.save(lobbyEntity);
+
+    // Save side slots separately
+    if (lobbyEntity.sideSlots.length > 0) {
+      await sideSlotRepo.save(lobbyEntity.sideSlots);
+    }
   }
 
   async getLobby(id: string): Promise<LobbyService | null> {
@@ -38,6 +48,10 @@ function lobbyServiceToEntity(service: LobbyService): LobbyEntity {
   entity.id = service.id;
   entity.createdBy = service.createdBy.id;
   entity.status = service.status;
+  entity.startAt = service.startAt;
+  entity.durationMinutes = service.durationMinutes;
+  entity.visibility = service.visibility;
+  entity.maxPlayersBySide = service.maxPlayersBySide;
 
   entity.sideSlots = [
     ...service.leftSideSlots.map((p) => {
@@ -69,6 +83,8 @@ function entityToLobbyService(entity: LobbyEntity): LobbyService {
     entity.durationMinutes
   );
   svc.status = entity.status as LobbyStatusEnum;
+  svc.visibility = entity.visibility;
+  svc.maxPlayersBySide = entity.maxPlayersBySide;
 
   // reset the arrays so we don't keep the constructor's default
   svc.leftSideSlots = [];
