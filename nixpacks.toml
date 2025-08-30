@@ -8,7 +8,9 @@ cmds = [
   "go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest",
   "echo 'Migrate CLI installed. Checking location:'",
   "ls -la $(go env GOPATH)/bin/migrate || echo 'migrate binary not found'",
-  "export PATH=$PATH:$(go env GOPATH)/bin",
+  "echo 'PATH=/root/go/bin:$PATH' >> /root/.profile",
+  "echo 'PATH=/root/go/bin:$PATH' >> /root/.bashrc",
+  "export PATH=/root/go/bin:$PATH",
   "echo 'PATH updated. Current PATH:' $PATH",
   "npm ci"
 ]
@@ -16,14 +18,13 @@ cmds = [
 [phases.build]
 cmds = [
   "echo '🔧 Build phase starting...'",
+  "export PATH=/root/go/bin:$PATH",
   "echo 'Current PATH:' $PATH",
   "echo 'Go binary path:' $(go env GOPATH)/bin",
-  "export PATH=$PATH:$(go env GOPATH)/bin",
-  "echo 'Updated PATH:' $PATH",
   "echo 'Checking if migrate is available:'",
   "which migrate || echo 'migrate not found in PATH'",
   "npm run build"
 ]
 
 [start]
-cmd = "npm run start:with-migrations"
+cmd = "export PATH=/root/go/bin:$PATH && npm run start:with-migrations"
