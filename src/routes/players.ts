@@ -2,8 +2,15 @@ import { Router, Request, Response } from "express";
 import { DataSource } from "typeorm";
 import { DbPlayerStore } from "../store/DbPlayerStore";
 import { DbClubStore } from "../store/DbClubStore";
-import Player from "../models/Player";
-import Club from "../models/Club";
+import { validateBody } from "../middleware/validation";
+import {
+  CreatePlayerSchema,
+  UpdatePlayerSchema,
+  SupabasePlayerSchema,
+  type CreatePlayer,
+  type UpdatePlayer,
+  type SupabasePlayer,
+} from "../schemas/player";
 import crypto from "crypto";
 
 const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
@@ -15,8 +22,13 @@ export function playerRouter(ds: DataSource) {
 
   router.post(
     "/",
+    validateBody(CreatePlayerSchema),
     asyncHandler(async (req: Request, res: Response) => {
-      const player: Player = req.body;
+      const playerData: CreatePlayer = req.body;
+      const player = {
+        ...playerData,
+        id: crypto.randomUUID(),
+      };
       await store.create(player);
       res.status(201).json(player);
     })
@@ -41,10 +53,25 @@ export function playerRouter(ds: DataSource) {
 
   router.put(
     "/:id",
+    validateBody(UpdatePlayerSchema),
     asyncHandler(async (req: Request, res: Response) => {
-      const player: Player = { ...req.body, id: req.params.id };
-      await store.update(player);
-      res.json(player);
+      const playerData: UpdatePlayer = req.body;
+
+      // Get existing player to merge with updates
+      const existingPlayer = await store.getById(req.params.id);
+      if (!existingPlayer) {
+        return res.status(404).json({ error: "Player not found" });
+      }
+
+      // Merge existing data with updates
+      const updatedPlayer = {
+        ...existingPlayer,
+        ...playerData,
+        id: req.params.id,
+      };
+
+      await store.update(updatedPlayer);
+      res.json(updatedPlayer);
     })
   );
 
@@ -68,8 +95,10 @@ export function playerRouter(ds: DataSource) {
 
   router.post(
     "/supabase",
+    validateBody(SupabasePlayerSchema),
     asyncHandler(async (req: Request, res: Response) => {
-      const { supabaseId, email, name, ...otherFields } = req.body;
+      const playerData: SupabasePlayer = req.body;
+      const { supabaseId, email, name, ...otherFields } = playerData;
 
       // First, try to find existing player by Supabase ID
       let player = await store.getBySupabaseId(supabaseId);
@@ -85,12 +114,13 @@ export function playerRouter(ds: DataSource) {
         res.json(updatedPlayer);
       } else {
         // Create new player
-        const newPlayer: Player = {
+        const newPlayer = {
           id: crypto.randomUUID(),
           name: name || email || `Player_${supabaseId.slice(0, 8)}`,
           supabaseId,
-          email,
-          ...otherFields,
+          email: email,
+          skillLevel: otherFields.skillLevel || "beginner",
+          profilePicture: otherFields.profilePicture ?? null,
         };
         await store.create(newPlayer);
         res.status(201).json(newPlayer);

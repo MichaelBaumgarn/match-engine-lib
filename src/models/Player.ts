@@ -1,10 +1,10 @@
 type PlayerType = {
   id: string;
   name: string;
-  skillLevel?: string | null;
+  skillLevel: "beginner" | "intermediate" | "advanced" | "expert";
   profilePicture?: string | null;
-  supabaseId?: string | null;
-  email?: string | null;
+  supabaseId: string;
+  email: string;
 };
 
 export default PlayerType;

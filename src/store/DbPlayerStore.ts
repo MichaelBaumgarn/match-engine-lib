@@ -4,10 +4,10 @@ import { PlayerEntity } from "../entities/PlayerEntity";
 export interface Player {
   id: string;
   name: string;
-  skillLevel?: string | null;
+  skillLevel: "beginner" | "intermediate" | "advanced" | "expert";
   profilePicture?: string | null;
-  supabaseId?: string | null;
-  email?: string | null;
+  supabaseId: string;
+  email: string;
 }
 
 export class DbPlayerStore {
@@ -64,10 +64,15 @@ function entityToPlayer(entity: PlayerEntity): Player {
   return {
     id: entity.id,
     name: entity.name,
-    skillLevel: entity.skillLevel ?? null,
+    skillLevel:
+      (entity.skillLevel as
+        | "beginner"
+        | "intermediate"
+        | "advanced"
+        | "expert") ?? "beginner",
     profilePicture: entity.profilePicture ?? null,
-    supabaseId: entity.supabaseId ?? null,
-    email: entity.email ?? null,
+    supabaseId: entity.supabaseId ?? "",
+    email: entity.email ?? "",
   };
 }
 
@@ -75,7 +80,9 @@ function playerToEntity(player: Player): PlayerEntity {
   const entity = new PlayerEntity();
   entity.id = player.id;
   entity.name = player.name;
-  entity.skillLevel = player.skillLevel ?? undefined;
+  entity.skillLevel = player.skillLevel;
   entity.profilePicture = player.profilePicture ?? undefined;
+  entity.supabaseId = player.supabaseId;
+  entity.email = player.email;
   return entity;
 }
