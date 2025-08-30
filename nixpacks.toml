@@ -26,4 +26,4 @@ cmds = [
 ]
 
 [start]
-cmd = "npm run start:with-db-test"
+cmd = "npm run start:with-migrations"
