@@ -26,7 +26,10 @@ export class DbLobbyStore {
     const repo = this.manager.getRepository(LobbyEntity);
     const entity = await repo.findOne({
       where: { id },
-      relations: { sideSlots: true }, // or make relation eager
+      relations: {
+        sideSlots: true,
+        club: true,
+      },
     });
     return entity ? entityToLobbyService(entity) : null;
   }
@@ -38,7 +41,12 @@ export class DbLobbyStore {
 
   async listLobbies(): Promise<LobbyService[]> {
     const repo = this.manager.getRepository(LobbyEntity);
-    const rows = await repo.find({ relations: { sideSlots: true } });
+    const rows = await repo.find({
+      relations: {
+        sideSlots: true,
+        club: true,
+      },
+    });
     return rows.map(entityToLobbyService);
   }
 
@@ -47,6 +55,7 @@ export class DbLobbyStore {
     const rows = await repo.find({
       relations: {
         sideSlots: true,
+        club: true,
       },
     });
 
@@ -59,7 +68,10 @@ export class DbLobbyStore {
     const repo = this.manager.getRepository(LobbyEntity);
     const entity = await repo.findOne({
       where: { id },
-      relations: { sideSlots: true },
+      relations: {
+        sideSlots: true,
+        club: true,
+      },
     });
     return entity ? entityToLobbyService(entity) : null;
   }
@@ -74,6 +86,11 @@ function lobbyServiceToEntity(service: LobbyService): LobbyEntity {
   entity.durationMinutes = service.durationMinutes;
   entity.visibility = service.visibility;
   entity.maxPlayersBySide = service.maxPlayersBySide;
+
+  // Set club if available
+  if (service.club) {
+    entity.club = { id: service.club.id } as any;
+  }
 
   entity.sideSlots = [
     ...service.leftSideSlots.map((p) => {
@@ -107,6 +124,17 @@ function entityToLobbyService(entity: LobbyEntity): LobbyService {
   svc.status = entity.status as LobbyStatusEnum;
   svc.visibility = entity.visibility;
   svc.maxPlayersBySide = entity.maxPlayersBySide;
+
+  // Add club information if available
+  if (entity.club) {
+    svc.club = {
+      id: entity.club.id,
+      name: entity.club.name,
+      address: entity.club.address,
+      city: entity.club.city,
+      slug: entity.club.slug ?? null,
+    };
+  }
 
   // reset the arrays so we don't keep the constructor's default
   svc.leftSideSlots = [];

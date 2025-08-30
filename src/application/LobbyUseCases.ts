@@ -59,7 +59,8 @@ export class LobbyUseCases {
     lobbyId: string,
     creator: Player,
     startAt: Date,
-    durationMinutes: number
+    durationMinutes: number,
+    clubId?: string
   ): Promise<LobbyService> {
     const qr = this.ds.createQueryRunner();
     await qr.connect();
@@ -70,9 +71,20 @@ export class LobbyUseCases {
         lobbyId,
         creator,
         startAt,
-
         durationMinutes
       );
+
+      // Set club if provided
+      if (clubId) {
+        lobby.club = {
+          id: clubId,
+          name: "",
+          address: "",
+          city: "",
+          slug: null,
+        };
+      }
+
       await store.saveLobby(lobby);
       await qr.commitTransaction();
       return lobby;

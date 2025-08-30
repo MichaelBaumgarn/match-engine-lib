@@ -1,4 +1,5 @@
 import PlayerType from "../models/Player";
+import Club from "../models/Club";
 
 export const LOBBY_ERRORS = {
   LOBBY_FULL: "Lobby is full",
@@ -24,6 +25,7 @@ class LobbyService {
   startAt: Date;
   durationMinutes: number = 90;
   visibility: Visibility = "public";
+  club?: Club;
 
   constructor(
     id: string,

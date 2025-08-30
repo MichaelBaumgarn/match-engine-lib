@@ -15,7 +15,7 @@ export default function lobbiesRouter(ds: DataSource) {
   const router = Router();
   const useCases = new LobbyUseCases(ds);
 
-  // POST /lobbies  { creatorId, lobbyId? }
+  // POST /lobbies  { creatorId, lobbyId?, clubId? }
   router.post(
     "/",
     asyncHandler(async (req: Request, res: Response) => {
@@ -27,13 +27,15 @@ export default function lobbiesRouter(ds: DataSource) {
       const creator: Player = { id: creatorId, name: "?" };
       const startAt: Date = req.body.startAt;
       const durationMinutes: number = req.body.durationMinutes;
+      const clubId: string = req.body.clubId;
       if (!startAt) return res.status(400).json({ error: "startAt required" });
 
       const lobby = await useCases.createLobby(
         lobbyId,
         creator,
         startAt,
-        durationMinutes
+        durationMinutes,
+        clubId
       );
       res.status(201).json(serializeLobby(lobby));
     })
@@ -137,6 +139,9 @@ function serializeLobby(lobby: LobbyService) {
     rightSide: lobby.rightSideSlots.map((p) => p.id),
     players: lobby.getAllPlayers.map((p) => p.id),
     createdBy: lobby.createdBy.id,
+    club: lobby.club,
+    startAt: lobby.startAt,
+    durationMinutes: lobby.durationMinutes,
   };
 }
 
@@ -171,6 +176,7 @@ async function serializeLobbyWithPlayerDetails(
     rightSide: rightSidePlayers,
     players: players,
     createdBy: creator,
+    club: lobby.club,
     startAt: lobby.startAt,
     durationMinutes: lobby.durationMinutes,
     playerCount: {
