@@ -33,6 +33,9 @@ const dbConfig = {
     connectionTimeoutMillis: 30000,
     query_timeout: 30000,
     statement_timeout: 30000,
+    // Add connection pool settings
+    max: 20,
+    idleTimeoutMillis: 30000,
   },
 };
 
@@ -44,5 +47,15 @@ console.log("- Database:", dbConfig.database);
 console.log("- Username:", dbConfig.username);
 console.log("- SSL:", dbConfig.ssl);
 console.log("- Logging:", dbConfig.logging);
+console.log("- Connection timeout:", dbConfig.connectTimeoutMS);
+
+// Log environment variables for debugging
+console.log("Environment variables:");
+console.log("- PGHOST:", PGHOST ? "set" : "not set");
+console.log("- PGPORT:", PGPORT ? "set" : "not set");
+console.log("- PGUSER:", PGUSER ? "set" : "not set");
+console.log("- PGPASSWORD:", PGPASSWORD ? "set" : "not set");
+console.log("- PGDATABASE:", PGDATABASE ? "set" : "not set");
+console.log("- DATABASE_URL:", DATABASE_URL ? "set" : "not set");
 
 export const AppDataSource = new DataSource(dbConfig);

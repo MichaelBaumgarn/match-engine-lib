@@ -105,11 +105,30 @@ if (require.main === module) {
         if (!AppDataSource.isInitialized) {
           await AppDataSource.initialize();
           console.log("✅ Database connection established");
+
+          // Test the connection with a simple query
+          try {
+            const result = await AppDataSource.query("SELECT version()");
+            console.log(
+              "✅ Database query test successful:",
+              result[0].version
+            );
+          } catch (queryError) {
+            console.error("⚠️  Database query test failed:", queryError);
+          }
         } else {
           console.log("✅ Database already connected");
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("❌ Database connection failed:", error);
+        console.error("❌ Connection error details:", {
+          message: error.message,
+          code: error.code,
+          errno: error.errno,
+          syscall: error.syscall,
+          address: error.address,
+          port: error.port,
+        });
         console.log("⚠️  Continuing without database connection...");
       }
 
