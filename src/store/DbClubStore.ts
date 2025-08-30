@@ -6,6 +6,7 @@ export interface Club {
   name: string;
   address: string;
   city: string;
+  slug?: string | null;
 }
 
 export class DbClubStore {
@@ -46,6 +47,7 @@ function clubToEntity(club: Club): ClubEntity {
   entity.name = club.name;
   entity.address = club.address;
   entity.city = club.city;
+  entity.slug = club.slug ?? undefined;
   return entity;
 }
 
@@ -55,5 +57,6 @@ function entityToClub(entity: ClubEntity): Club {
     name: entity.name,
     address: entity.address,
     city: entity.city,
+    slug: entity.slug ?? null,
   };
 }

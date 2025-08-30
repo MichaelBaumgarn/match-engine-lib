@@ -22,6 +22,9 @@ export class ClubEntity {
   @Column({ type: "text" })
   city!: string;
 
+  @Column({ type: "text", unique: true, nullable: true })
+  slug?: string;
+
   @OneToMany(() => LobbyEntity, (lobby) => lobby.club)
   lobbies!: LobbyEntity[];
 }

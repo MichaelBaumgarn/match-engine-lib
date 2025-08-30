@@ -3,6 +3,7 @@ type Club = {
   name: string;
   address: string;
   city: string;
+  slug?: string | null;
 };
 
 export default Club;

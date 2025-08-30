@@ -1,0 +1,2 @@
+ALTER TABLE clubs DROP COLUMN slug;
+ALTER TABLE clubs DROP COLUMN image_url;
