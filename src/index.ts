@@ -44,6 +44,11 @@ export async function createApp() {
     next();
   });
 
+  // Health check endpoint
+  app.get("/health", (req, res) => {
+    res.json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+
   app.use("/lobbies", lobbiesRouter(AppDataSource));
   app.use("/players", playerRouter(AppDataSource));
   app.use("/clubs", clubRouter(AppDataSource));
