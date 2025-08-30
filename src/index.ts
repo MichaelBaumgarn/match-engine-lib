@@ -6,6 +6,14 @@ import { clubRouter } from "./routes/clubs";
 import { playerRouter } from "./routes/players";
 
 export async function createApp() {
+  // Debug environment variables (without sensitive data)
+  console.log("Environment check:");
+  console.log("- NODE_ENV:", process.env.NODE_ENV);
+  console.log("- PGHOST:", process.env.PGHOST ? "set" : "not set");
+  console.log("- PGUSER:", process.env.PGUSER ? "set" : "not set");
+  console.log("- PGDATABASE:", process.env.PGDATABASE ? "set" : "not set");
+  console.log("- DATABASE_URL:", process.env.DATABASE_URL ? "set" : "not set");
+
   if (!AppDataSource.isInitialized) {
     await AppDataSource.initialize();
   }
