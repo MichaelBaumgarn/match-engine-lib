@@ -7,13 +7,13 @@ import { ClubEntity } from "../entities/ClubEntity";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  host: "localhost",
-  port: 54323,
-  username: "postgres",
-  password: "postgres",
-  database: "match-store",
-  synchronize: false, // ⚠️ use only for dev
-  logging: false,
-  entities: [LobbyEntity, PlayerEntity, SideSlotEntity, ClubEntity], // ✅ add all here
+  host: process.env.DB_HOST || "localhost",
+  port: parseInt(process.env.DB_PORT || "54323"),
+  username: process.env.DB_USERNAME || "postgres",
+  password: process.env.DB_PASSWORD || "postgres",
+  database: process.env.DB_NAME || "match-store",
+  // synchronize: process.env.NODE_ENV === "development", // Only sync in development
+  logging: process.env.NODE_ENV === "development",
+  entities: [LobbyEntity, PlayerEntity, SideSlotEntity, ClubEntity],
   namingStrategy: new SnakeNamingStrategy(),
 });
