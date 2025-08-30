@@ -4,6 +4,7 @@ nixPkgs = ["go", "nodejs_18", "npm-9_x"]
 [phases.install]
 cmds = [
   "go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest",
+  "export PATH=$PATH:$(go env GOPATH)/bin",
   "npm ci"
 ]
 
