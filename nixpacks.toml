@@ -26,4 +26,4 @@ cmds = [
 ]
 
 [start]
-cmd = "npm run test:db && npm start"
+cmd = "npm run start:with-db-test"
