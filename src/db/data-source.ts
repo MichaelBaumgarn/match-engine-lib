@@ -17,10 +17,23 @@ const dbConfig = {
   username: PGUSER || process.env.DB_USERNAME || "postgres",
   password: PGPASSWORD || process.env.DB_PASSWORD || "postgres",
   database: PGDATABASE || process.env.DB_NAME || "match-store",
-  // synchronize: process.env.NODE_ENV === "development",
   logging: process.env.NODE_ENV === "development",
   entities: [LobbyEntity, PlayerEntity, SideSlotEntity, ClubEntity],
   namingStrategy: new SnakeNamingStrategy(),
+  // Add SSL configuration for Railway
+  ssl:
+    process.env.NODE_ENV === "production"
+      ? {
+          rejectUnauthorized: false,
+        }
+      : false,
+  // Add connection timeout and retry settings
+  connectTimeoutMS: 30000,
+  extra: {
+    connectionTimeoutMillis: 30000,
+    query_timeout: 30000,
+    statement_timeout: 30000,
+  },
 };
 
 // Log database configuration (without sensitive data)
@@ -29,7 +42,7 @@ console.log("- Host:", dbConfig.host);
 console.log("- Port:", dbConfig.port);
 console.log("- Database:", dbConfig.database);
 console.log("- Username:", dbConfig.username);
-console.log("- Synchronize:", dbConfig.synchronize);
+console.log("- SSL:", dbConfig.ssl);
 console.log("- Logging:", dbConfig.logging);
 
 export const AppDataSource = new DataSource(dbConfig);

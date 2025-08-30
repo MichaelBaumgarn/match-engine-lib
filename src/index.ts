@@ -13,10 +13,7 @@ export async function createApp() {
   console.log("- PGUSER:", process.env.PGUSER ? "set" : "not set");
   console.log("- PGDATABASE:", process.env.PGDATABASE ? "set" : "not set");
   console.log("- DATABASE_URL:", process.env.DATABASE_URL ? "set" : "not set");
-
-  if (!AppDataSource.isInitialized) {
-    await AppDataSource.initialize();
-  }
+  console.log("- PORT:", process.env.PORT || "8080");
 
   const app = express();
   app.use(cors());
@@ -54,7 +51,21 @@ export async function createApp() {
 
   // Health check endpoint
   app.get("/health", (req, res) => {
-    res.json({ status: "ok", timestamp: new Date().toISOString() });
+    console.log("Health check requested");
+    res.json({
+      status: "ok",
+      timestamp: new Date().toISOString(),
+      database: AppDataSource.isInitialized ? "connected" : "disconnected",
+    });
+  });
+
+  // Root endpoint for basic connectivity test
+  app.get("/", (req, res) => {
+    res.json({
+      message: "Match Engine API is running",
+      timestamp: new Date().toISOString(),
+      version: "1.0.0",
+    });
   });
 
   app.use("/lobbies", lobbiesRouter(AppDataSource));
@@ -70,6 +81,7 @@ export async function createApp() {
       res: express.Response,
       _next: express.NextFunction
     ) => {
+      console.error("Global error handler caught:", err);
       const status = err.statusCode || err.status || 500;
       const message = err.message || "Internal Server Error";
       res.status(status).json({ error: message });
@@ -81,8 +93,60 @@ export async function createApp() {
 
 // If you want a standalone server:
 if (require.main === module) {
-  createApp().then((app) => {
-    const port = process.env.PORT ?? 8080;
-    app.listen(port, () => console.log(`HTTP listening on :${port}`));
-  });
+  console.log("🚀 Starting Match Engine API...");
+
+  createApp()
+    .then(async (app) => {
+      console.log("✅ App created successfully");
+
+      // Try to initialize database connection
+      try {
+        console.log("🔌 Attempting to connect to database...");
+        if (!AppDataSource.isInitialized) {
+          await AppDataSource.initialize();
+          console.log("✅ Database connection established");
+        } else {
+          console.log("✅ Database already connected");
+        }
+      } catch (error) {
+        console.error("❌ Database connection failed:", error);
+        console.log("⚠️  Continuing without database connection...");
+      }
+
+      const port = process.env.PORT ?? 8080;
+      const server = app.listen(port, () => {
+        console.log(`✅ HTTP server listening on port ${port}`);
+        console.log(
+          `✅ Health check available at http://localhost:${port}/health`
+        );
+        console.log(`✅ API ready at http://localhost:${port}`);
+      });
+
+      // Handle server errors
+      server.on("error", (error) => {
+        console.error("❌ Server error:", error);
+        process.exit(1);
+      });
+
+      // Handle graceful shutdown
+      process.on("SIGTERM", () => {
+        console.log("🛑 Received SIGTERM, shutting down gracefully...");
+        server.close(() => {
+          console.log("✅ Server closed");
+          process.exit(0);
+        });
+      });
+
+      process.on("SIGINT", () => {
+        console.log("🛑 Received SIGINT, shutting down gracefully...");
+        server.close(() => {
+          console.log("✅ Server closed");
+          process.exit(0);
+        });
+      });
+    })
+    .catch((error) => {
+      console.error("❌ Failed to start application:", error);
+      process.exit(1);
+    });
 }
