@@ -6,13 +6,22 @@ const { execSync } = require("child_process");
 const { PGHOST, PGPORT, PGUSER, PGPASSWORD, PGDATABASE, DATABASE_URL } =
   process.env;
 
-// Construct DATABASE_URL if not provided by Railway
-const databaseUrl =
-  DATABASE_URL ||
-  `postgres://${PGUSER}:${PGPASSWORD}@${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode=require`;
+console.log("🔍 Migration Debug Info:");
+console.log("- DATABASE_URL:", DATABASE_URL ? "set" : "not set");
+console.log("- PGHOST:", PGHOST ? "set" : "not set");
+console.log("- PGUSER:", PGUSER ? "set" : "not set");
+console.log("- PGPASSWORD:", PGPASSWORD ? "set" : "not set");
+console.log("- PGDATABASE:", PGDATABASE ? "set" : "not set");
 
-// Check if we have valid database credentials
-if (!DATABASE_URL && (!PGHOST || !PGUSER || !PGPASSWORD || !PGDATABASE)) {
+// Use DATABASE_URL if provided by Railway, otherwise construct from individual variables
+let databaseUrl;
+if (DATABASE_URL) {
+  console.log("✅ Using Railway-provided DATABASE_URL");
+  databaseUrl = DATABASE_URL;
+} else if (PGHOST && PGUSER && PGPASSWORD && PGDATABASE) {
+  console.log("⚠️  Using individual database variables");
+  databaseUrl = `postgres://${PGUSER}:${PGPASSWORD}@${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode=require`;
+} else {
   console.log(
     "⚠️  No database credentials found. Skipping migrations (this is normal for local development)."
   );
@@ -20,7 +29,7 @@ if (!DATABASE_URL && (!PGHOST || !PGUSER || !PGPASSWORD || !PGDATABASE)) {
   process.exit(0);
 }
 
-console.log("🔍 Debug Info:");
+console.log("🔍 Additional Debug Info:");
 console.log("- Current PATH:", process.env.PATH);
 console.log("- GOPATH:", process.env.GOPATH);
 console.log("- Working directory:", process.cwd());
@@ -37,6 +46,13 @@ try {
   console.log("- Migrate binary is executable");
 } catch (error) {
   console.error("- ERROR: Migrate binary is not executable or doesn't exist");
+  console.error("- Trying to find migrate in PATH...");
+  try {
+    const whichResult = execSync("which migrate", { encoding: "utf8" }).trim();
+    console.log("- Found migrate at:", whichResult);
+  } catch (whichError) {
+    console.error("- Migrate not found in PATH either");
+  }
   process.exit(1);
 }
 
