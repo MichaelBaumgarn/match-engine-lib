@@ -26,4 +26,4 @@ cmds = [
 ]
 
 [start]
-cmd = "npm run start:test"
+cmd = "npm start"
