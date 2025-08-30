@@ -24,20 +24,46 @@ console.log("🔍 Debug Info:");
 console.log("- Current PATH:", process.env.PATH);
 console.log("- GOPATH:", process.env.GOPATH);
 console.log("- Working directory:", process.cwd());
-console.log(
-  "- Migrate command available:",
-  require("child_process")
+
+// Try to find migrate binary
+let migratePath = "migrate"; // default
+try {
+  migratePath = require("child_process")
     .execSync("which migrate", { encoding: "utf8" })
-    .trim()
-);
+    .trim();
+  console.log("- Migrate command found at:", migratePath);
+} catch (error) {
+  // If not in PATH, try common locations
+  const commonPaths = [
+    "/root/go/bin/migrate",
+    "/usr/local/bin/migrate",
+    "/usr/bin/migrate",
+  ];
+
+  for (const path of commonPaths) {
+    try {
+      require("child_process").execSync(`test -f ${path}`, { stdio: "ignore" });
+      migratePath = path;
+      console.log("- Migrate binary found at:", migratePath);
+      break;
+    } catch (e) {
+      // continue to next path
+    }
+  }
+
+  if (migratePath === "migrate") {
+    console.log("- Migrate binary not found in common locations");
+  }
+}
+
 console.log(
   "Running migrations with database URL:",
   databaseUrl.replace(/:[^:@]*@/, ":****@")
 );
 
 try {
-  // Run migrations using go migrate CLI
-  execSync(`migrate -database "${databaseUrl}" -path migrations up`, {
+  // Run migrations using go migrate CLI with full path
+  execSync(`${migratePath} -database "${databaseUrl}" -path migrations up`, {
     stdio: "inherit",
     env: { ...process.env, DATABASE_URL: databaseUrl },
   });
