@@ -20,6 +20,16 @@ if (!DATABASE_URL && (!PGHOST || !PGUSER || !PGPASSWORD || !PGDATABASE)) {
   process.exit(0);
 }
 
+console.log("🔍 Debug Info:");
+console.log("- Current PATH:", process.env.PATH);
+console.log("- GOPATH:", process.env.GOPATH);
+console.log("- Working directory:", process.cwd());
+console.log(
+  "- Migrate command available:",
+  require("child_process")
+    .execSync("which migrate", { encoding: "utf8" })
+    .trim()
+);
 console.log(
   "Running migrations with database URL:",
   databaseUrl.replace(/:[^:@]*@/, ":****@")
