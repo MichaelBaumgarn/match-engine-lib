@@ -25,35 +25,28 @@ console.log("- Current PATH:", process.env.PATH);
 console.log("- GOPATH:", process.env.GOPATH);
 console.log("- Working directory:", process.cwd());
 
-// Try to find migrate binary
-let migratePath = "migrate"; // default
+// Use the known path where migrate is installed
+const migratePath = "/root/go/bin/migrate";
+console.log("- Using migrate binary at:", migratePath);
+
+// Check if migrate binary exists and is executable
 try {
-  migratePath = require("child_process")
-    .execSync("which migrate", { encoding: "utf8" })
-    .trim();
-  console.log("- Migrate command found at:", migratePath);
+  require("child_process").execSync(`test -x ${migratePath}`, {
+    stdio: "ignore",
+  });
+  console.log("- Migrate binary is executable");
 } catch (error) {
-  // If not in PATH, try common locations
-  const commonPaths = [
-    "/root/go/bin/migrate",
-    "/usr/local/bin/migrate",
-    "/usr/bin/migrate",
-  ];
+  console.error("- ERROR: Migrate binary is not executable or doesn't exist");
+  process.exit(1);
+}
 
-  for (const path of commonPaths) {
-    try {
-      require("child_process").execSync(`test -f ${path}`, { stdio: "ignore" });
-      migratePath = path;
-      console.log("- Migrate binary found at:", migratePath);
-      break;
-    } catch (e) {
-      // continue to next path
-    }
-  }
-
-  if (migratePath === "migrate") {
-    console.log("- Migrate binary not found in common locations");
-  }
+// Check if migrations directory exists
+try {
+  require("child_process").execSync(`test -d migrations`, { stdio: "ignore" });
+  console.log("- Migrations directory exists");
+} catch (error) {
+  console.error("- ERROR: Migrations directory not found");
+  process.exit(1);
 }
 
 console.log(

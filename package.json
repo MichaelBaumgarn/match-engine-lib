@@ -11,7 +11,7 @@
     "migrate:up": "node scripts/migrate.js",
     "migrate:down": "migrate -database \"$DATABASE_URL\" -path migrations down",
     "migrate:version": "migrate -database \"$DATABASE_URL\" -path migrations version",
-    "postbuild": "npm run migrate:up"
+    "start:with-migrations": "npm run migrate:up && npm start"
   },
   "vitest": {
     "globals": true,
