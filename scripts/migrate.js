@@ -34,24 +34,47 @@ console.log("- Current PATH:", process.env.PATH);
 console.log("- GOPATH:", process.env.GOPATH);
 console.log("- Working directory:", process.cwd());
 
-// Use the known path where migrate is installed
-const migratePath = "/root/go/bin/migrate";
-console.log("- Using migrate binary at:", migratePath);
+// Try multiple possible locations for the migrate binary
+const possibleMigratePaths = [
+  "/root/go/bin/migrate",
+  "/usr/local/bin/migrate",
+  "/usr/bin/migrate",
+  "migrate", // fallback to PATH
+];
 
-// Check if migrate binary exists and is executable
-try {
-  require("child_process").execSync(`test -x ${migratePath}`, {
-    stdio: "ignore",
-  });
-  console.log("- Migrate binary is executable");
-} catch (error) {
-  console.error("- ERROR: Migrate binary is not executable or doesn't exist");
-  console.error("- Trying to find migrate in PATH...");
+let migratePath = null;
+for (const path of possibleMigratePaths) {
   try {
-    const whichResult = execSync("which migrate", { encoding: "utf8" }).trim();
-    console.log("- Found migrate at:", whichResult);
-  } catch (whichError) {
-    console.error("- Migrate not found in PATH either");
+    if (path === "migrate") {
+      // Try to find migrate in PATH
+      const whichResult = execSync("which migrate", {
+        encoding: "utf8",
+      }).trim();
+      console.log("- Found migrate in PATH at:", whichResult);
+      migratePath = whichResult;
+      break;
+    } else {
+      // Check if file exists and is executable
+      require("child_process").execSync(`test -x ${path}`, {
+        stdio: "ignore",
+      });
+      console.log("- Found migrate binary at:", path);
+      migratePath = path;
+      break;
+    }
+  } catch (error) {
+    console.log("- Migrate not found at:", path);
+  }
+}
+
+if (!migratePath) {
+  console.error("- ERROR: Could not find migrate binary in any location");
+  console.error("- Trying to list /root/go/bin contents:");
+  try {
+    const lsResult = execSync("ls -la /root/go/bin/", { encoding: "utf8" });
+    console.error("- /root/go/bin contents:", lsResult);
+  } catch (error) {
+    console.error("- Could not list /root/go/bin:", error.message);
   }
   process.exit(1);
 }
