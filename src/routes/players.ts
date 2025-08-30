@@ -119,7 +119,7 @@ export function playerRouter(ds: DataSource) {
           name: name || email || `Player_${supabaseId.slice(0, 8)}`,
           supabaseId,
           email: email,
-          skillLevel: otherFields.skillLevel || "beginner",
+          skillLevel: otherFields.skillLevel || "A1",
           profilePicture: otherFields.profilePicture ?? null,
         };
         await store.create(newPlayer);

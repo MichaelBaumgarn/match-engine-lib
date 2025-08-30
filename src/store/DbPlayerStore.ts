@@ -4,7 +4,7 @@ import { PlayerEntity } from "../entities/PlayerEntity";
 export interface Player {
   id: string;
   name: string;
-  skillLevel: "beginner" | "intermediate" | "advanced" | "expert";
+  skillLevel: "A1" | "A2" | "A3" | "F1" | "F2" | "F3";
   profilePicture?: string | null;
   supabaseId: string;
   email: string;
@@ -65,11 +65,7 @@ function entityToPlayer(entity: PlayerEntity): Player {
     id: entity.id,
     name: entity.name,
     skillLevel:
-      (entity.skillLevel as
-        | "beginner"
-        | "intermediate"
-        | "advanced"
-        | "expert") ?? "beginner",
+      (entity.skillLevel as "A1" | "A2" | "A3" | "F1" | "F2" | "F3") ?? "A1",
     profilePicture: entity.profilePicture ?? null,
     supabaseId: entity.supabaseId ?? "",
     email: entity.email ?? "",
