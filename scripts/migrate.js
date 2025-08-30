@@ -26,7 +26,7 @@ console.log(
 );
 
 try {
-  // Run migrations
+  // Run migrations using go migrate CLI
   execSync(`migrate -database "${databaseUrl}" -path migrations up`, {
     stdio: "inherit",
     env: { ...process.env, DATABASE_URL: databaseUrl },
