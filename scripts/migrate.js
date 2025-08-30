@@ -63,6 +63,7 @@ console.log(
 
 try {
   // Run migrations using go migrate CLI with full path
+  console.log(`🚀 Running: ${migratePath} -database "***" -path migrations up`);
   execSync(`${migratePath} -database "${databaseUrl}" -path migrations up`, {
     stdio: "inherit",
     env: { ...process.env, DATABASE_URL: databaseUrl },
@@ -71,5 +72,8 @@ try {
   console.log("✅ Migrations completed successfully");
 } catch (error) {
   console.error("❌ Migration failed:", error.message);
+  console.error("Full error details:", error);
+  if (error.stdout) console.error("STDOUT:", error.stdout.toString());
+  if (error.stderr) console.error("STDERR:", error.stderr.toString());
   process.exit(1);
 }
