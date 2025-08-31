@@ -129,11 +129,12 @@ function entityToLobbyService(entity: LobbyEntity): LobbyService {
     creator,
     entity.startAt,
     entity.durationMinutes,
-    entity.courtName
+    entity.courtName || undefined
   );
   svc.status = entity.status as LobbyStatusEnum;
   svc.visibility = entity.visibility;
   svc.maxPlayersBySide = entity.maxPlayersBySide;
+  svc.courtName = entity.courtName || "Court 1";
 
   // Add club information if available
   if (entity.club) {
