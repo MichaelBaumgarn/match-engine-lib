@@ -11,8 +11,8 @@ export const TestDataSource = new DataSource({
   username: "postgres",
   password: "postgres",
   database: "match-store",
-  synchronize: true, // only for test DB
-  dropSchema: true, // clears tables between test runs
+  synchronize: true, // re-enabled now that entity mapping is fixed
+  dropSchema: true, // re-enabled for clean test runs
   entities: [LobbyEntity, PlayerEntity, SideSlotEntity, ClubEntity], // ✅ add all here
   logging: false,
 });

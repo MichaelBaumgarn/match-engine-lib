@@ -4,6 +4,7 @@ import {
   Column,
   OneToMany,
   ManyToOne,
+  JoinColumn,
 } from "typeorm";
 import { SideSlotEntity } from "./SideSlotEntity";
 import { ClubEntity } from "./ClubEntity";
@@ -19,11 +20,14 @@ export class LobbyEntity {
   @Column({ type: "text" })
   status!: "open" | "confirmed";
 
-  @Column({ type: "text" })
-  visibility!: "public" | "invite" | "private";
-
   @Column({ type: "integer", default: 2 })
   maxPlayersBySide!: number;
+
+  @Column({ type: "timestamptz", default: () => "now()" })
+  createdAt!: Date;
+
+  @Column({ type: "timestamptz", default: () => "now()" })
+  updatedAt!: Date;
 
   @Column({ type: "timestamptz" })
   startAt!: Date;
@@ -31,14 +35,15 @@ export class LobbyEntity {
   @Column({ type: "integer" })
   durationMinutes!: number;
 
+  @Column({ type: "text" })
+  visibility!: "public" | "invite" | "private";
+
+  @Column({ type: "text", name: "court_name" })
+  courtName!: string;
+
   @ManyToOne(() => ClubEntity, (club) => club.lobbies)
+  @JoinColumn({ name: "clubId" })
   club!: ClubEntity;
-
-  @Column({ type: "timestamptz", default: () => "now()" })
-  createdAt!: Date;
-
-  @Column({ type: "timestamptz", default: () => "now()" })
-  updatedAt!: Date;
 
   @OneToMany(() => SideSlotEntity, (sideSlot) => sideSlot.lobby)
   sideSlots!: SideSlotEntity[];

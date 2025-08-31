@@ -56,6 +56,7 @@ describe("LobbyEntity CRUD", () => {
       visibility: "public",
       startAt: new Date(),
       durationMinutes: 90,
+      courtName: "Default Court",
     });
     await lobbyRepo.save(lobby);
 
@@ -97,6 +98,7 @@ describe("LobbyEntity CRUD", () => {
       visibility: "public",
       durationMinutes: 90,
       startAt: new Date(),
+      courtName: "Default Court",
     });
     await lobbyRepo.save(lobby);
 
@@ -109,5 +111,28 @@ describe("LobbyEntity CRUD", () => {
     await sideRepo.save(sideSlot);
     const savedSlot = await sideRepo.findOneByOrFail({ id: sideSlot.id });
     expect(savedSlot.playerId).toBe(player.id);
+  });
+
+  it("should create a lobby with court name", async () => {
+    const playerRepo = TestDataSource.getRepository(PlayerEntity);
+    const lobbyRepo = TestDataSource.getRepository(LobbyEntity);
+
+    const player = playerRepo.create({ name: "Court Test Player" });
+    await playerRepo.save(player);
+
+    const lobby = lobbyRepo.create({
+      createdBy: player.id,
+      status: "open",
+      visibility: "public",
+      durationMinutes: 90,
+      startAt: new Date(),
+      courtName: "Tennis Court 1",
+    });
+    await lobbyRepo.save(lobby);
+
+    const saved = await lobbyRepo.findOneByOrFail({ id: lobby.id });
+    expect(saved.courtName).toBe("Tennis Court 1");
+    expect(saved.status).toBe("open");
+    expect(saved.createdBy).toBe(player.id);
   });
 });

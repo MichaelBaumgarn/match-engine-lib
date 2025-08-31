@@ -10,27 +10,42 @@ import crypto from "crypto";
 const player1: PlayerType = {
   id: crypto.randomUUID(),
   name: "A",
+  skillLevel: "A1",
+  supabaseId: crypto.randomUUID(),
+  email: "player1@test.com",
 };
 let player2: PlayerType = {
   id: crypto.randomUUID(),
   name: "B",
+  skillLevel: "A2",
+  supabaseId: crypto.randomUUID(),
+  email: "player2@test.com",
 };
 let player3: PlayerType = {
   id: crypto.randomUUID(),
   name: "C",
+  skillLevel: "A3",
+  supabaseId: crypto.randomUUID(),
+  email: "player3@test.com",
 };
 let player4: PlayerType = {
   id: crypto.randomUUID(),
   name: "D",
+  skillLevel: "F1",
+  supabaseId: crypto.randomUUID(),
+  email: "player4@test.com",
 };
 let player5: PlayerType = {
   id: crypto.randomUUID(),
   name: "F",
+  skillLevel: "F2",
+  supabaseId: crypto.randomUUID(),
+  email: "player5@test.com",
 };
 
 describe("match-engine-lib", () => {
   it("can add player", () => {
-    let service = new LobbyService(crypto.randomUUID(), player1);
+    let service = new LobbyService(crypto.randomUUID(), player1, new Date());
     service.addPlayer(player2, "left");
 
     expect(service.leftSideSlots.length).toBe(2);
@@ -49,7 +64,7 @@ describe("match-engine-lib", () => {
   });
 
   it("throws when adding player to a side that is full", () => {
-    const service = new LobbyService(crypto.randomUUID(), player1);
+    const service = new LobbyService(crypto.randomUUID(), player1, new Date());
     service.addPlayer(player2, "left");
     expect(() => service.addPlayer(player3, "left")).toThrowError(
       LOBBY_ERRORS.LOBBY_FULL
