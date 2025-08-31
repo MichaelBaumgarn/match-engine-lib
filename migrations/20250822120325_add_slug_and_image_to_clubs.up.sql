@@ -1,2 +1,2 @@
-ALTER TABLE clubs ADD COLUMN slug TEXT UNIQUE;
-ALTER TABLE clubs ADD COLUMN image_url TEXT;
+-- slug column already exists from first migration
+-- No changes needed

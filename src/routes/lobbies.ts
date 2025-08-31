@@ -15,7 +15,7 @@ export default function lobbiesRouter(ds: DataSource) {
   const router = Router();
   const useCases = new LobbyUseCases(ds);
 
-  // POST /lobbies  { creatorId, lobbyId?, clubId? }
+  // POST /lobbies  { creatorId, lobbyId?, clubId?, courtName? }
   router.post(
     "/",
     asyncHandler(async (req: Request, res: Response) => {
@@ -24,10 +24,17 @@ export default function lobbiesRouter(ds: DataSource) {
         return res.status(400).json({ error: "creatorId required" });
 
       const lobbyId: string = req.body.lobbyId ?? crypto.randomUUID();
-      const creator: Player = { id: creatorId, name: "?" };
+      const creator: Player = {
+        id: creatorId,
+        name: "?",
+        skillLevel: "A1",
+        supabaseId: creatorId,
+        email: "unknown@example.com",
+      };
       const startAt: Date = req.body.startAt;
       const durationMinutes: number = req.body.durationMinutes;
       const clubId: string = req.body.clubId;
+      const courtName: string = req.body.courtName;
       if (!startAt) return res.status(400).json({ error: "startAt required" });
 
       const lobby = await useCases.createLobby(
@@ -35,7 +42,8 @@ export default function lobbiesRouter(ds: DataSource) {
         creator,
         startAt,
         durationMinutes,
-        clubId
+        clubId,
+        courtName
       );
       res.status(201).json(serializeLobby(lobby));
     })
@@ -95,7 +103,13 @@ export default function lobbiesRouter(ds: DataSource) {
           .status(400)
           .json({ error: "side must be 'left' or 'right'" });
 
-      const player: Player = { id: playerId, name: "?" };
+      const player: Player = {
+        id: playerId,
+        name: "?",
+        skillLevel: "A1",
+        supabaseId: playerId,
+        email: "unknown@example.com",
+      };
       const lobby = await useCases.joinLobby(req.params.id, player, side);
       res.json(serializeLobby(lobby));
     })
@@ -109,7 +123,13 @@ export default function lobbiesRouter(ds: DataSource) {
       if (!playerId)
         return res.status(400).json({ error: "playerId required" });
 
-      const player: Player = { id: playerId, name: "?" };
+      const player: Player = {
+        id: playerId,
+        name: "?",
+        skillLevel: "A1",
+        supabaseId: playerId,
+        email: "unknown@example.com",
+      };
       const lobby = await useCases.leaveLobby(req.params.id, player);
       res.json(serializeLobby(lobby));
     })
@@ -142,6 +162,7 @@ function serializeLobby(lobby: LobbyService) {
     club: lobby.club,
     startAt: lobby.startAt,
     durationMinutes: lobby.durationMinutes,
+    courtName: lobby.courtName,
   };
 }
 
@@ -179,6 +200,7 @@ async function serializeLobbyWithPlayerDetails(
     club: lobby.club,
     startAt: lobby.startAt,
     durationMinutes: lobby.durationMinutes,
+    courtName: lobby.courtName,
     playerCount: {
       left: lobby.leftSideSlots.length,
       right: lobby.rightSideSlots.length,

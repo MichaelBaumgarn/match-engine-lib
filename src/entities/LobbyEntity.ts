@@ -38,11 +38,11 @@ export class LobbyEntity {
   @Column({ type: "text" })
   visibility!: "public" | "invite" | "private";
 
-  @Column({ type: "text", name: "court_name" })
+  @Column({ type: "text" })
   courtName!: string;
 
   @ManyToOne(() => ClubEntity, (club) => club.lobbies)
-  @JoinColumn({ name: "clubId" })
+  @JoinColumn()
   club!: ClubEntity;
 
   @OneToMany(() => SideSlotEntity, (sideSlot) => sideSlot.lobby)

@@ -86,6 +86,7 @@ function lobbyServiceToEntity(service: LobbyService): LobbyEntity {
   entity.durationMinutes = service.durationMinutes;
   entity.visibility = service.visibility;
   entity.maxPlayersBySide = service.maxPlayersBySide;
+  entity.courtName = service.courtName;
 
   // Set club if available
   if (service.club) {
@@ -97,14 +98,16 @@ function lobbyServiceToEntity(service: LobbyService): LobbyEntity {
       const slot = new SideSlotEntity();
       slot.playerId = p.id;
       slot.side = "left";
-      slot.lobby = entity; // sets FK
+      slot.lobbyId = entity.id; // Set the foreign key
+      slot.lobby = entity; // Set the relation
       return slot;
     }),
     ...service.rightSideSlots.map((p) => {
       const slot = new SideSlotEntity();
       slot.playerId = p.id;
       slot.side = "right";
-      slot.lobby = entity;
+      slot.lobbyId = entity.id; // Set the foreign key
+      slot.lobby = entity; // Set the relation
       return slot;
     }),
   ];
@@ -114,12 +117,19 @@ function lobbyServiceToEntity(service: LobbyService): LobbyEntity {
 
 function entityToLobbyService(entity: LobbyEntity): LobbyService {
   // Avoid duplicating creator: rebuild arrays explicitly
-  const creator = { id: entity.createdBy, name: "?" };
+  const creator = {
+    id: entity.createdBy,
+    name: "?",
+    skillLevel: "A1" as const,
+    supabaseId: entity.createdBy,
+    email: "unknown@example.com",
+  };
   const svc = new LobbyService(
     entity.id,
     creator,
     entity.startAt,
-    entity.durationMinutes
+    entity.durationMinutes,
+    entity.courtName
   );
   svc.status = entity.status as LobbyStatusEnum;
   svc.visibility = entity.visibility;
@@ -141,7 +151,13 @@ function entityToLobbyService(entity: LobbyEntity): LobbyService {
   svc.rightSideSlots = [];
 
   for (const slot of entity.sideSlots || []) {
-    const p = { id: slot.playerId, name: "?" };
+    const p = {
+      id: slot.playerId,
+      name: "?",
+      skillLevel: "A1" as const,
+      supabaseId: slot.playerId,
+      email: "unknown@example.com",
+    };
     if (slot.side === "left") svc.leftSideSlots.push(p);
     else svc.rightSideSlots.push(p);
   }

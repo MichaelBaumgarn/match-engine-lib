@@ -1,3 +1,2 @@
-ALTER TABLE players ADD COLUMN skill_level VARCHAR(255);
-ALTER TABLE players ADD COLUMN profile_picture VARCHAR(255);
-ALTER TABLE players ADD COLUMN city VARCHAR(255);
+-- Columns already exist from first migration
+-- No changes needed

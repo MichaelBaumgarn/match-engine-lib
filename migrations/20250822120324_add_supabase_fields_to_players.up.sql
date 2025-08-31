@@ -1,2 +1,2 @@
-ALTER TABLE players ADD COLUMN supabase_id VARCHAR(255) UNIQUE;
-ALTER TABLE players ADD COLUMN email VARCHAR(255) UNIQUE;
+-- Columns already exist from first migration
+-- No changes needed

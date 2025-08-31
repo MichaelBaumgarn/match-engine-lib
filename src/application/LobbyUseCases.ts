@@ -60,7 +60,8 @@ export class LobbyUseCases {
     creator: Player,
     startAt: Date,
     durationMinutes: number,
-    clubId?: string
+    clubId?: string,
+    courtName?: string
   ): Promise<LobbyService> {
     const qr = this.ds.createQueryRunner();
     await qr.connect();
@@ -71,8 +72,14 @@ export class LobbyUseCases {
         lobbyId,
         creator,
         startAt,
-        durationMinutes
+        durationMinutes,
+        courtName
       );
+
+      // Ensure courtName is set properly (in case constructor doesn't work)
+      if (!lobby.courtName || lobby.courtName === "Court 1") {
+        lobby.courtName = courtName || "Court 1";
+      }
 
       // Set club if provided
       if (clubId) {

@@ -1,6 +1,5 @@
 -- Drop tables in dependency order (most dependent first)
 DROP TABLE IF EXISTS side_slots;
-DROP TABLE IF EXISTS lobby_players;
 -- Drop foreign key constraints before dropping tables
 ALTER TABLE lobbies DROP CONSTRAINT IF EXISTS fk_club_id;
 DROP TABLE IF EXISTS lobbies;

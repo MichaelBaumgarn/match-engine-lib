@@ -1,1 +1,2 @@
-ALTER TABLE clubs DROP COLUMN image_url;
+-- image_url column was never added, so no need to remove it
+-- No changes needed
