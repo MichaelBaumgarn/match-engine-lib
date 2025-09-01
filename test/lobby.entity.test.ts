@@ -11,27 +11,6 @@ import PlayerType from "../src/models/Player";
 import crypto from "crypto";
 import { DataSource, EntityManager } from "typeorm";
 
-const player1: PlayerType = {
-  id: crypto.randomUUID(),
-  name: "A",
-};
-let player2: PlayerType = {
-  id: crypto.randomUUID(),
-  name: "B",
-};
-let player3: PlayerType = {
-  id: crypto.randomUUID(),
-  name: "C",
-};
-let player4: PlayerType = {
-  id: crypto.randomUUID(),
-  name: "D",
-};
-let player5: PlayerType = {
-  id: crypto.randomUUID(),
-  name: "F",
-};
-
 describe("LobbyEntity CRUD", () => {
   beforeAll(async () => {
     await TestDataSource.initialize();
@@ -98,6 +77,7 @@ describe("LobbyEntity CRUD", () => {
       visibility: "public",
       durationMinutes: 90,
       startAt: new Date(),
+      maxPlayersBySide: 3,
       courtName: "Default Court",
     });
     await lobbyRepo.save(lobby);
@@ -127,11 +107,13 @@ describe("LobbyEntity CRUD", () => {
       durationMinutes: 90,
       startAt: new Date(),
       courtName: "Tennis Court 1",
+      maxPlayersBySide: 3,
     });
     await lobbyRepo.save(lobby);
 
     const saved = await lobbyRepo.findOneByOrFail({ id: lobby.id });
     expect(saved.courtName).toBe("Tennis Court 1");
+    expect(saved.maxPlayersBySide).toBe(3);
     expect(saved.status).toBe("open");
     expect(saved.createdBy).toBe(player.id);
   });
