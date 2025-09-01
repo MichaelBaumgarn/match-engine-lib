@@ -1,4 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
+import { z } from "zod";
 
 import { DataSource } from "typeorm";
 import crypto from "crypto";
@@ -11,17 +12,44 @@ import { DbPlayerStore } from "../store/DbPlayerStore";
 const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
   Promise.resolve(fn(req, res, next)).catch(next);
 
+// Zod schema for lobby creation
+const createLobbySchema = z.object({
+  creatorId: z.string().uuid("Invalid creatorId format"),
+  startAt: z
+    .string()
+    .datetime("Invalid startAt format")
+    .transform((val) => new Date(val)),
+  durationMinutes: z.number().int().positive("Duration must be positive"),
+  clubId: z.string().uuid("Invalid clubId format").optional(),
+  courtName: z.string().min(1, "Court name is required").optional(),
+  maxPlayersBySide: z.number().int().positive().min(2).max(10).optional(),
+});
+
 export default function lobbiesRouter(ds: DataSource) {
   const router = Router();
   const useCases = new LobbyUseCases(ds);
 
-  // POST /lobbies  { creatorId, lobbyId?, clubId?, courtName? }
+  // POST /lobbies  { creatorId, lobbyId?, clubId?, courtName?, maxPlayersBySide? }
   router.post(
     "/",
     asyncHandler(async (req: Request, res: Response) => {
-      const creatorId: string = req.body.creatorId;
-      if (!creatorId)
-        return res.status(400).json({ error: "creatorId required" });
+      // Validate request body with Zod
+      const validationResult = createLobbySchema.safeParse(req.body);
+      if (!validationResult.success) {
+        return res.status(400).json({
+          error: "Validation failed",
+          details: validationResult.error.issues,
+        });
+      }
+
+      const {
+        creatorId,
+        startAt,
+        durationMinutes,
+        clubId,
+        courtName,
+        maxPlayersBySide,
+      } = validationResult.data;
 
       // Fetch the actual player from the database
       const playerStore = new DbPlayerStore(ds.manager);
@@ -30,20 +58,16 @@ export default function lobbiesRouter(ds: DataSource) {
         return res.status(404).json({ error: "Creator player not found" });
       }
 
-      const lobbyId: string = req.body.lobbyId ?? crypto.randomUUID();
-      const startAt: Date = req.body.startAt;
-      const durationMinutes: number = req.body.durationMinutes;
-      const clubId: string = req.body.clubId;
-      const courtName: string = req.body.courtName;
-      if (!startAt) return res.status(400).json({ error: "startAt required" });
+      const lobbyId = crypto.randomUUID();
 
       const lobby = await useCases.createLobby({
         lobbyId,
-        creator,
+        creator: creator,
         startAt,
         durationMinutes,
         clubId,
         courtName,
+        maxPlayersBySide,
       });
       res.status(201).json(serializeLobby(lobby));
     })
