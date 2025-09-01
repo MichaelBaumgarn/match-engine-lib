@@ -37,14 +37,14 @@ export default function lobbiesRouter(ds: DataSource) {
       const courtName: string = req.body.courtName;
       if (!startAt) return res.status(400).json({ error: "startAt required" });
 
-      const lobby = await useCases.createLobby(
+      const lobby = await useCases.createLobby({
         lobbyId,
         creator,
         startAt,
         durationMinutes,
         clubId,
-        courtName
-      );
+        courtName,
+      });
       res.status(201).json(serializeLobby(lobby));
     })
   );
