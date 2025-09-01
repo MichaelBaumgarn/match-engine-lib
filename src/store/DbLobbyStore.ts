@@ -124,17 +124,16 @@ function entityToLobbyService(entity: LobbyEntity): LobbyService {
     supabaseId: entity.createdBy,
     email: "unknown@example.com",
   };
-  const svc = new LobbyService(
-    entity.id,
-    creator,
-    entity.startAt,
-    entity.durationMinutes,
-    entity.courtName || undefined
-  );
+  const svc = new LobbyService({
+    id: entity.id,
+    createdBy: creator,
+    startAt: entity.startAt,
+    durationMinutes: entity.durationMinutes,
+    courtName: entity.courtName || "Court 1",
+  });
   svc.status = entity.status as LobbyStatusEnum;
   svc.visibility = entity.visibility;
   svc.maxPlayersBySide = entity.maxPlayersBySide;
-  svc.courtName = entity.courtName || "Court 1";
 
   // Add club information if available
   if (entity.club) {

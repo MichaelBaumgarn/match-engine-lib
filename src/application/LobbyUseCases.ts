@@ -68,18 +68,13 @@ export class LobbyUseCases {
     await qr.startTransaction();
     try {
       const store = new DbLobbyStore(qr.manager);
-      const lobby = new LobbyService(
-        lobbyId,
-        creator,
+      const lobby = new LobbyService({
+        id: lobbyId,
+        createdBy: creator,
         startAt,
         durationMinutes,
-        courtName
-      );
-
-      // Ensure courtName is set properly (in case constructor doesn't work)
-      if (!lobby.courtName || lobby.courtName === "Court 1") {
-        lobby.courtName = courtName || "Court 1";
-      }
+        courtName: courtName || "Default Court",
+      });
 
       // Set club if provided
       if (clubId) {

@@ -26,19 +26,24 @@ class LobbyService {
   durationMinutes: number = 90;
   visibility: Visibility = "public";
   club?: Club;
+  courtName?: string;
 
-  constructor(
-    id: string,
-    createdBy: PlayerType,
-    startAt: Date,
-    durationMinutes?: number
-  ) {
-    this.id = id;
-    this.createdBy = createdBy;
-    this.leftSideSlots = [createdBy];
-    this.startAt = startAt;
-    if (durationMinutes) {
-      this.durationMinutes = durationMinutes;
+  constructor(options: {
+    id: string;
+    createdBy: PlayerType;
+    startAt: Date;
+    durationMinutes?: number;
+    courtName?: string;
+  }) {
+    this.id = options.id;
+    this.createdBy = options.createdBy;
+    this.leftSideSlots = [options.createdBy];
+    this.startAt = options.startAt;
+    if (options.durationMinutes) {
+      this.durationMinutes = options.durationMinutes;
+    }
+    if (options.courtName) {
+      this.courtName = options.courtName;
     }
   }
 
