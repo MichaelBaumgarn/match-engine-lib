@@ -62,6 +62,7 @@ export class LobbyUseCases {
     durationMinutes: number;
     clubId?: string;
     courtName?: string;
+    maxPlayersBySide?: number;
   }): Promise<LobbyService> {
     const qr = this.ds.createQueryRunner();
     await qr.connect();
@@ -74,6 +75,7 @@ export class LobbyUseCases {
         startAt: options.startAt,
         durationMinutes: options.durationMinutes,
         courtName: options.courtName || "Default Court",
+        maxPlayersBySide: options.maxPlayersBySide,
       });
 
       // Set club if provided

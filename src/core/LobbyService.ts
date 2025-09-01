@@ -34,6 +34,7 @@ class LobbyService {
     startAt: Date;
     durationMinutes?: number;
     courtName?: string;
+    maxPlayersBySide?: number;
   }) {
     this.id = options.id;
     this.createdBy = options.createdBy;
@@ -44,6 +45,9 @@ class LobbyService {
     }
     if (options.courtName) {
       this.courtName = options.courtName;
+    }
+    if (options.maxPlayersBySide) {
+      this.maxPlayersBySide = options.maxPlayersBySide;
     }
   }
 

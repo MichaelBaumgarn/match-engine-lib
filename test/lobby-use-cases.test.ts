@@ -59,6 +59,7 @@ describe("LobbyUseCases", () => {
       startAt,
       durationMinutes,
       courtName,
+      maxPlayersBySide: 3,
     });
 
     expect(lobby.id).toBe(lobbyId);
@@ -71,6 +72,7 @@ describe("LobbyUseCases", () => {
     const savedLobby = await lobbyRepo.findOneBy({ id: lobbyId });
     expect(savedLobby).toBeTruthy();
     expect(savedLobby?.courtName).toBe(courtName);
+    expect(savedLobby?.maxPlayersBySide).toBe(3);
   });
 
   it("should create a lobby with club information", async () => {
