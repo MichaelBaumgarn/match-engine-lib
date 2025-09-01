@@ -23,14 +23,14 @@ export default function lobbiesRouter(ds: DataSource) {
       if (!creatorId)
         return res.status(400).json({ error: "creatorId required" });
 
+      // Fetch the actual player from the database
+      const playerStore = new DbPlayerStore(ds.manager);
+      const creator = await playerStore.getById(creatorId);
+      if (!creator) {
+        return res.status(404).json({ error: "Creator player not found" });
+      }
+
       const lobbyId: string = req.body.lobbyId ?? crypto.randomUUID();
-      const creator: Player = {
-        id: creatorId,
-        name: "?",
-        skillLevel: "A1",
-        supabaseId: creatorId,
-        email: "unknown@example.com",
-      };
       const startAt: Date = req.body.startAt;
       const durationMinutes: number = req.body.durationMinutes;
       const clubId: string = req.body.clubId;
