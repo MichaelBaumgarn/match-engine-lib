@@ -4,20 +4,17 @@ import { LobbyEntity } from "../src/entities/LobbyEntity";
 import { PlayerEntity } from "../src/entities/PlayerEntity";
 import { SideSlotEntity } from "../src/entities/SideSlotEntity";
 import "reflect-metadata";
-import { InMemoryLobbyStore } from "../src/store/InMemoryLobbyStore";
-import { DbLobbyStore } from "../src/store/DbLobbyStore";
-import LobbyService, { LOBBY_ERRORS } from "../src/core/LobbyService";
-import PlayerType from "../src/models/Player";
-import crypto from "crypto";
-import { DataSource, EntityManager } from "typeorm";
 
 describe("LobbyEntity CRUD", () => {
   beforeAll(async () => {
-    await TestDataSource.initialize();
+    if (!TestDataSource.isInitialized) {
+      await TestDataSource.initialize();
+    }
   });
 
   afterAll(async () => {
-    await TestDataSource.destroy();
+    // Only destroy if we're the last test file
+    // This is a simple approach - in production you might want a more sophisticated solution
   });
 
   it("should create and read a lobby", async () => {
