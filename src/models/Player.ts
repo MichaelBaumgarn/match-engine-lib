@@ -5,6 +5,7 @@ type PlayerType = {
   profilePicture?: string | null;
   supabaseId: string;
   email: string;
+  city?: string | null;
 };
 
 export default PlayerType;

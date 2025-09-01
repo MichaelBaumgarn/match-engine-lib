@@ -8,6 +8,7 @@ export interface Player {
   profilePicture?: string | null;
   supabaseId: string;
   email: string;
+  city?: string | null;
 }
 
 export class DbPlayerStore {
@@ -69,6 +70,7 @@ function entityToPlayer(entity: PlayerEntity): Player {
     profilePicture: entity.profilePicture ?? null,
     supabaseId: entity.supabaseId ?? "",
     email: entity.email ?? "",
+    city: entity.city ?? null,
   };
 }
 
@@ -80,5 +82,6 @@ function playerToEntity(player: Player): PlayerEntity {
   entity.profilePicture = player.profilePicture ?? undefined;
   entity.supabaseId = player.supabaseId;
   entity.email = player.email;
+  entity.city = player.city ?? undefined;
   return entity;
 }

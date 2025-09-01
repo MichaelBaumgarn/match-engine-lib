@@ -98,7 +98,8 @@ export function playerRouter(ds: DataSource) {
     validateBody(SupabasePlayerSchema),
     asyncHandler(async (req: Request, res: Response) => {
       const playerData: SupabasePlayer = req.body;
-      const { supabaseId, email, name, ...otherFields } = playerData;
+      const { supabaseId, email, name, skillLevel, profilePicture, city } =
+        playerData;
 
       // First, try to find existing player by Supabase ID
       let player = await store.getBySupabaseId(supabaseId);
@@ -108,7 +109,10 @@ export function playerRouter(ds: DataSource) {
         const updatedPlayer = {
           ...player,
           email: email || player.email,
-          ...otherFields,
+          name: name || player.name,
+          skillLevel: skillLevel || player.skillLevel,
+          profilePicture: profilePicture ?? player.profilePicture,
+          city: city || player.city,
         };
         await store.update(updatedPlayer);
         res.json(updatedPlayer);
@@ -119,8 +123,9 @@ export function playerRouter(ds: DataSource) {
           name: name || email || `Player_${supabaseId.slice(0, 8)}`,
           supabaseId,
           email: email,
-          skillLevel: otherFields.skillLevel || "A1",
-          profilePicture: otherFields.profilePicture ?? null,
+          skillLevel: skillLevel || "A1",
+          profilePicture: profilePicture ?? null,
+          city: city || null,
         };
         await store.create(newPlayer);
         res.status(201).json(newPlayer);

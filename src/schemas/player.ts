@@ -34,6 +34,7 @@ export const SupabasePlayerSchema = z.object({
   name: z.string().min(1, "Name is required"),
   skillLevel: SkillLevelEnum.default("A1"),
   profilePicture: z.string().url().optional(),
+  city: z.string().optional(),
 });
 
 // Type exports
