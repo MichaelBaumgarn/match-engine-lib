@@ -13,8 +13,10 @@
     "start:with-db-test": "node dist/start-with-db-test.js",
     "test:db": "node dist/test-db.js",
     "migrate:up": "node scripts/migrate.js",
-    "migrate:down": "migrate -database \"$DATABASE_URL\" -path migrations down",
-    "migrate:version": "migrate -database \"$DATABASE_URL\" -path migrations version",
+    "migrate:down": "migrate -database \"postgres://postgres:postgres@localhost:54323/match-store?sslmode=disable\" -path migrations down",
+    "migrate:version": "migrate -database \"postgres://postgres:postgres@localhost:54323/match-store?sslmode=disable\" -path migrations version",
+    "migrate:wipe": "migrate -database \"postgres://postgres:postgres@localhost:54323/match-store?sslmode=disable\" -path migrations -verbose down",
+    "migrate:recreate": "migrate -database \"postgres://postgres:postgres@localhost:54323/match-store?sslmode=disable\" -path migrations -verbose up",
     "start:with-migrations": "npm run migrate:up && npm start"
   },
   "vitest": {

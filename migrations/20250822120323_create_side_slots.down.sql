@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS side_slots;
+DROP TABLE IF EXISTS side_slots CASCADE;

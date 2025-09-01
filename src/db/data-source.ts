@@ -12,22 +12,20 @@ const { PGHOST, PGPORT, PGUSER, PGPASSWORD, PGDATABASE, DATABASE_URL } =
 // Create database configuration based on available variables
 let dbConfig: any;
 
-if (DATABASE_URL) {
-  console.log("✅ Using Railway-provided DATABASE_URL");
+// Prioritize local database for development, use Railway for production
+if (process.env.NODE_ENV === "production" && DATABASE_URL) {
+  console.log("✅ Using Railway-provided DATABASE_URL for production");
 
   dbConfig = {
     type: "postgres" as const,
     url: DATABASE_URL,
-    logging: process.env.NODE_ENV === "development",
+    logging: false,
     entities: [LobbyEntity, PlayerEntity, SideSlotEntity, ClubEntity],
     namingStrategy: new SnakeNamingStrategy(),
     // Add SSL configuration for Railway
-    ssl:
-      process.env.NODE_ENV === "production"
-        ? {
-            rejectUnauthorized: false,
-          }
-        : false,
+    ssl: {
+      rejectUnauthorized: false,
+    },
     // Add connection timeout and retry settings
     connectTimeoutMS: 30000,
     extra: {
@@ -41,19 +39,14 @@ if (DATABASE_URL) {
   };
 
   // Log database configuration (without sensitive data)
-  console.log("Database configuration (using DATABASE_URL):");
+  console.log("Database configuration (using Railway DATABASE_URL):");
   console.log("- URL: [provided by Railway]");
   console.log("- SSL:", dbConfig.ssl);
   console.log("- Logging:", dbConfig.logging);
   console.log("- Connection timeout:", dbConfig.connectTimeoutMS);
-
-  // Log environment variables for debugging
-  console.log("Environment variables:");
-  console.log("- DATABASE_URL: set");
-  console.log("- NODE_ENV:", process.env.NODE_ENV);
 } else {
-  // Fallback to individual variables (for local development)
-  console.log("⚠️  DATABASE_URL not found, using individual variables");
+  // Use local database for development
+  console.log("🖥️  Using local database for development");
 
   dbConfig = {
     type: "postgres" as const,
@@ -62,16 +55,11 @@ if (DATABASE_URL) {
     username: PGUSER || process.env.DB_USERNAME || "postgres",
     password: PGPASSWORD || process.env.DB_PASSWORD || "postgres",
     database: PGDATABASE || process.env.DB_NAME || "match-store",
-    logging: process.env.NODE_ENV === "development",
+    logging: process.env.NODE_ENV === "development" || true,
     entities: [LobbyEntity, PlayerEntity, SideSlotEntity, ClubEntity],
     namingStrategy: new SnakeNamingStrategy(),
-    // Add SSL configuration for Railway
-    ssl:
-      process.env.NODE_ENV === "production"
-        ? {
-            rejectUnauthorized: false,
-          }
-        : false,
+    // No SSL for local development
+    ssl: false,
     // Add connection timeout and retry settings
     connectTimeoutMS: 30000,
     extra: {
@@ -85,7 +73,7 @@ if (DATABASE_URL) {
   };
 
   // Log database configuration (without sensitive data)
-  console.log("Database configuration (using individual variables):");
+  console.log("Database configuration (using local database):");
   console.log("- Host:", dbConfig.host);
   console.log("- Port:", dbConfig.port);
   console.log("- Database:", dbConfig.database);
@@ -102,6 +90,7 @@ if (DATABASE_URL) {
   console.log("- PGPASSWORD:", PGPASSWORD ? "set" : "not set");
   console.log("- PGDATABASE:", PGDATABASE ? "set" : "not set");
   console.log("- DATABASE_URL:", DATABASE_URL ? "set" : "not set");
+  console.log("- NODE_ENV:", process.env.NODE_ENV);
 }
 
 export const AppDataSource = new DataSource(dbConfig);
