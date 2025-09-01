@@ -45,7 +45,11 @@ let player5: PlayerType = {
 
 describe("match-engine-lib", () => {
   it("can add player", () => {
-    let service = new LobbyService(crypto.randomUUID(), player1, new Date());
+    let service = new LobbyService({
+      id: crypto.randomUUID(),
+      createdBy: player1,
+      startAt: new Date(),
+    });
     service.addPlayer(player2, "left");
 
     expect(service.leftSideSlots.length).toBe(2);
@@ -64,7 +68,11 @@ describe("match-engine-lib", () => {
   });
 
   it("throws when adding player to a side that is full", () => {
-    const service = new LobbyService(crypto.randomUUID(), player1, new Date());
+    const service = new LobbyService({
+      id: crypto.randomUUID(),
+      createdBy: player1,
+      startAt: new Date(),
+    });
     service.addPlayer(player2, "left");
     expect(() => service.addPlayer(player3, "left")).toThrowError(
       LOBBY_ERRORS.LOBBY_FULL

@@ -86,7 +86,7 @@ function lobbyServiceToEntity(service: LobbyService): LobbyEntity {
   entity.durationMinutes = service.durationMinutes;
   entity.visibility = service.visibility;
   entity.maxPlayersBySide = service.maxPlayersBySide;
-  entity.courtName = service.courtName;
+  entity.courtName = service.courtName || "Court 1";
 
   // Set club if available
   if (service.club) {
