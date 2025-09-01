@@ -53,14 +53,13 @@ describe("LobbyUseCases", () => {
     const durationMinutes = 90;
     const courtName = "Tennis Court 1";
 
-    const lobby = await lobbyUseCases.createLobby(
+    const lobby = await lobbyUseCases.createLobby({
       lobbyId,
-      playerType,
+      creator: playerType,
       startAt,
       durationMinutes,
-      undefined,
-      courtName
-    );
+      courtName,
+    });
 
     expect(lobby.id).toBe(lobbyId);
     expect(lobby.createdBy).toBe(playerType);
@@ -102,14 +101,14 @@ describe("LobbyUseCases", () => {
     const lobbyId = crypto.randomUUID();
     const startAt = new Date();
 
-    const lobby = await lobbyUseCases.createLobby(
+    const lobby = await lobbyUseCases.createLobby({
       lobbyId,
-      playerType,
+      creator: playerType,
       startAt,
-      120,
-      club.id,
-      "Club Court"
-    );
+      durationMinutes: 120,
+      clubId: club.id,
+      courtName: "Club Court",
+    });
 
     expect(lobby.club).toBeTruthy();
     expect(lobby.club?.id).toBe(club.id);
@@ -156,14 +155,13 @@ describe("LobbyUseCases", () => {
 
     // Create a lobby first
     const lobbyId = crypto.randomUUID();
-    const lobby = await lobbyUseCases.createLobby(
+    const lobby = await lobbyUseCases.createLobby({
       lobbyId,
-      creatorType,
-      new Date(),
-      90,
-      undefined,
-      "Join Test Court"
-    );
+      creator: creatorType,
+      startAt: new Date(),
+      durationMinutes: 90,
+      courtName: "Join Test Court",
+    });
 
     // Join the lobby
     const updatedLobby = await lobbyUseCases.joinLobby(
@@ -209,12 +207,12 @@ describe("LobbyUseCases", () => {
 
     // Create and join lobby
     const lobbyId = crypto.randomUUID();
-    let lobby = await lobbyUseCases.createLobby(
+    let lobby = await lobbyUseCases.createLobby({
       lobbyId,
-      creatorType,
-      new Date(),
-      90
-    );
+      creator: creatorType,
+      startAt: new Date(),
+      durationMinutes: 90,
+    });
 
     lobby = await lobbyUseCases.joinLobby(lobbyId, leaverType, "right");
 
@@ -290,12 +288,12 @@ describe("LobbyUseCases", () => {
     const lobbyId = crypto.randomUUID();
 
     // Create lobby successfully
-    const lobby = await lobbyUseCases.createLobby(
+    const lobby = await lobbyUseCases.createLobby({
       lobbyId,
-      playerType,
-      new Date(),
-      90
-    );
+      creator: playerType,
+      startAt: new Date(),
+      durationMinutes: 90,
+    });
 
     // Verify lobby was created
     const savedLobby = await lobbyRepo.findOneBy({ id: lobbyId });

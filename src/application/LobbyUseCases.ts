@@ -55,31 +55,31 @@ export class LobbyUseCases {
     }
   }
 
-  async createLobby(
-    lobbyId: string,
-    creator: Player,
-    startAt: Date,
-    durationMinutes: number,
-    clubId?: string,
-    courtName?: string
-  ): Promise<LobbyService> {
+  async createLobby(options: {
+    lobbyId: string;
+    creator: Player;
+    startAt: Date;
+    durationMinutes: number;
+    clubId?: string;
+    courtName?: string;
+  }): Promise<LobbyService> {
     const qr = this.ds.createQueryRunner();
     await qr.connect();
     await qr.startTransaction();
     try {
       const store = new DbLobbyStore(qr.manager);
       const lobby = new LobbyService({
-        id: lobbyId,
-        createdBy: creator,
-        startAt,
-        durationMinutes,
-        courtName: courtName || "Default Court",
+        id: options.lobbyId,
+        createdBy: options.creator,
+        startAt: options.startAt,
+        durationMinutes: options.durationMinutes,
+        courtName: options.courtName || "Default Court",
       });
 
       // Set club if provided
-      if (clubId) {
+      if (options.clubId) {
         lobby.club = {
-          id: clubId,
+          id: options.clubId,
           name: "",
           address: "",
           city: "",
