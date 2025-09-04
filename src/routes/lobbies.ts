@@ -187,6 +187,7 @@ function serializeLobby(lobby: LobbyService) {
     startAt: lobby.startAt,
     durationMinutes: lobby.durationMinutes,
     courtName: lobby.courtName,
+    maxPlayersBySide: lobby.maxPlayersBySide,
   };
 }
 
@@ -225,6 +226,7 @@ async function serializeLobbyWithPlayerDetails(
     startAt: lobby.startAt,
     durationMinutes: lobby.durationMinutes,
     courtName: lobby.courtName,
+    maxPlayersBySide: lobby.maxPlayersBySide,
     playerCount: {
       left: lobby.leftSideSlots.length,
       right: lobby.rightSideSlots.length,
