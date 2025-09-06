@@ -99,4 +99,9 @@ export class LobbyUseCases {
       await qr.release();
     }
   }
+
+  async getLobbiesByPlayerId(playerId: string): Promise<LobbyService[]> {
+    const store = new DbLobbyStore(this.ds.manager);
+    return await store.getLobbiesByPlayerId(playerId);
+  }
 }

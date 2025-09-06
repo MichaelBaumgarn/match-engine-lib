@@ -115,6 +115,37 @@ export default function lobbiesRouter(ds: DataSource) {
     })
   );
 
+  // GET /lobbies/player/:playerId
+  router.get(
+    "/player/:playerId",
+    asyncHandler(async (req: Request, res: Response) => {
+      const playerId = req.params.playerId;
+      const playerStore = new DbPlayerStore(ds.manager);
+
+      // Validate player exists
+      const player = await playerStore.getById(playerId);
+      if (!player) {
+        return res.status(404).json({ error: "Player not found" });
+      }
+
+      const lobbies = await useCases.getLobbiesByPlayerId(playerId);
+
+      // Check if client wants detailed player info
+      const includePlayers = req.query.includePlayers === "true";
+
+      if (includePlayers) {
+        const lobbiesWithDetails = await Promise.all(
+          lobbies.map((lobby) =>
+            serializeLobbyWithPlayerDetails(lobby, playerStore)
+          )
+        );
+        res.json(lobbiesWithDetails);
+      } else {
+        res.json(lobbies.map(serializeLobby));
+      }
+    })
+  );
+
   // POST /lobbies/:id/join  { playerId, side }
   router.post(
     "/:id/join",

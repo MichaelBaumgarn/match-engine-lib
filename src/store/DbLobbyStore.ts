@@ -75,6 +75,26 @@ export class DbLobbyStore {
     });
     return entity ? entityToLobbyService(entity) : null;
   }
+
+  async getLobbiesByPlayerId(playerId: string): Promise<LobbyService[]> {
+    // Validate UUID format to prevent database errors
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(playerId)) {
+      return [];
+    }
+
+    const repo = this.manager.getRepository(LobbyEntity);
+    const rows = await repo
+      .createQueryBuilder("lobby")
+      .leftJoinAndSelect("lobby.sideSlots", "sideSlot")
+      .leftJoinAndSelect("lobby.club", "club")
+      .where("lobby.createdBy = :playerId", { playerId })
+      .orWhere("sideSlot.playerId = :playerId", { playerId })
+      .getMany();
+
+    return rows.map(entityToLobbyService);
+  }
 }
 
 function lobbyServiceToEntity(service: LobbyService): LobbyEntity {

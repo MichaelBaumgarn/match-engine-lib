@@ -5,4 +5,5 @@ export interface LobbyStore {
   getLobby(id: string): Promise<LobbyService | null>;
   deleteLobby(id: string): Promise<void>;
   listLobbies(): Promise<LobbyService[]>;
+  getLobbiesByPlayerId(playerId: string): Promise<LobbyService[]>;
 }
