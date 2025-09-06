@@ -130,19 +130,13 @@ export default function lobbiesRouter(ds: DataSource) {
 
       const lobbies = await useCases.getLobbiesByPlayerId(playerId);
 
-      // Check if client wants detailed player info
-      const includePlayers = req.query.includePlayers === "true";
-
-      if (includePlayers) {
-        const lobbiesWithDetails = await Promise.all(
-          lobbies.map((lobby) =>
-            serializeLobbyWithPlayerDetails(lobby, playerStore)
-          )
-        );
-        res.json(lobbiesWithDetails);
-      } else {
-        res.json(lobbies.map(serializeLobby));
-      }
+      // Always include detailed player information for player-specific lobbies
+      const lobbiesWithDetails = await Promise.all(
+        lobbies.map((lobby) =>
+          serializeLobbyWithPlayerDetails(lobby, playerStore)
+        )
+      );
+      res.json(lobbiesWithDetails);
     })
   );
 
