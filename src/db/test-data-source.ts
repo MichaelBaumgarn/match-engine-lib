@@ -12,7 +12,7 @@ export const TestDataSource = new DataSource({
   password: "postgres",
   database: "match-store",
   synchronize: true, // re-enabled now that entity mapping is fixed
-  dropSchema: true, // re-enabled for clean test runs
+  dropSchema: false, // Disabled to prevent conflicts between test files
   entities: [LobbyEntity, PlayerEntity, SideSlotEntity, ClubEntity], // ✅ add all here
   logging: false,
 });

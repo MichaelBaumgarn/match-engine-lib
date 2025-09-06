@@ -17,13 +17,13 @@ describe("LobbyService Constructor Tests", () => {
     const durationMinutes = 90;
     const customCourtName = "Test Court";
 
-    const lobby = new LobbyService(
-      lobbyId,
-      creator,
+    const lobby = new LobbyService({
+      id: lobbyId,
+      createdBy: creator,
       startAt,
       durationMinutes,
-      customCourtName
-    );
+      courtName: customCourtName,
+    });
 
     // Ensure courtName is set properly (in case constructor doesn't work)
     if (!lobby.courtName || lobby.courtName === "Court 1") {
@@ -47,13 +47,13 @@ describe("LobbyService Constructor Tests", () => {
     const startAt = new Date();
     const durationMinutes = 90;
 
-    const lobby = new LobbyService(
-      lobbyId,
-      creator,
+    const lobby = new LobbyService({
+      id: lobbyId,
+      createdBy: creator,
       startAt,
-      durationMinutes
+      durationMinutes,
       // courtName not provided
-    );
+    });
 
     // Ensure courtName is set properly (in case constructor doesn't work)
     if (!lobby.courtName) {

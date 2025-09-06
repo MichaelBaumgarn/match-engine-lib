@@ -52,11 +52,15 @@ describe("LobbyEntity CRUD", () => {
   });
 
   it("should delete a lobby", async () => {
-    const repo = TestDataSource.getRepository(LobbyEntity);
-    const lobby = await repo.findOneByOrFail({});
-    await repo.delete(lobby.id);
+    const lobbyRepo = TestDataSource.getRepository(LobbyEntity);
+    const sideSlotRepo = TestDataSource.getRepository(SideSlotEntity);
+    const lobby = await lobbyRepo.findOneByOrFail({});
 
-    const found = await repo.findOneBy({ id: lobby.id });
+    // Delete side slots first to avoid foreign key constraint violation
+    await sideSlotRepo.delete({ lobbyId: lobby.id });
+    await lobbyRepo.delete(lobby.id);
+
+    const found = await lobbyRepo.findOneBy({ id: lobby.id });
     expect(found).toBeNull();
   });
 

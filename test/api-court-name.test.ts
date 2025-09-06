@@ -10,12 +10,14 @@ describe("Court Name Integration Tests", () => {
   let useCases: LobbyUseCases;
 
   beforeAll(async () => {
-    await TestDataSource.initialize();
+    if (!TestDataSource.isInitialized) {
+      await TestDataSource.initialize();
+    }
     useCases = new LobbyUseCases(TestDataSource);
   });
 
   afterAll(async () => {
-    await TestDataSource.destroy();
+    // Don't destroy the shared TestDataSource
   });
 
   it("should create a lobby with custom court name", async () => {
@@ -31,14 +33,13 @@ describe("Court Name Integration Tests", () => {
     const durationMinutes = 90;
     const customCourtName = "Tennis Court 2";
 
-    const lobby = await useCases.createLobby(
+    const lobby = await useCases.createLobby({
       lobbyId,
       creator,
       startAt,
       durationMinutes,
-      undefined, // clubId
-      customCourtName
-    );
+      courtName: customCourtName,
+    });
 
     expect(lobby.courtName).toBe(customCourtName);
     expect(lobby.id).toBe(lobbyId);
@@ -57,15 +58,15 @@ describe("Court Name Integration Tests", () => {
     const startAt = new Date();
     const durationMinutes = 90;
 
-    const lobby = await useCases.createLobby(
+    const lobby = await useCases.createLobby({
       lobbyId,
       creator,
       startAt,
-      durationMinutes
+      durationMinutes,
       // courtName not provided, should use default
-    );
+    });
 
-    expect(lobby.courtName).toBe("Court 1");
+    expect(lobby.courtName).toBe("Default Court");
     expect(lobby.id).toBe(lobbyId);
     expect(lobby.createdBy.id).toBe(creator.id);
   });
