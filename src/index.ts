@@ -4,6 +4,7 @@ import { AppDataSource } from "./db/data-source";
 import lobbiesRouter from "./routes/lobbies";
 import { clubRouter } from "./routes/clubs";
 import { playerRouter } from "./routes/players";
+import { healthRouter } from "./routes/health";
 
 export async function createApp() {
   // Debug environment variables (without sensitive data)
@@ -21,6 +22,11 @@ export async function createApp() {
 
   // Request logging middleware
   app.use((req, res, next) => {
+    // Skip logging for health check endpoints to reduce noise
+    if (req.path.includes('/health') || req.path.includes('/actuator/health')) {
+      return next();
+    }
+
     const timestamp = new Date().toISOString();
     console.log(`[${timestamp}] ${req.method} ${req.path} - ${req.ip}`);
 
@@ -49,16 +55,6 @@ export async function createApp() {
     next();
   });
 
-  // Health check endpoint
-  app.get("/health", (req, res) => {
-    console.log("Health check requested");
-    res.json({
-      status: "ok",
-      timestamp: new Date().toISOString(),
-      database: AppDataSource.isInitialized ? "connected" : "disconnected",
-    });
-  });
-
   // Root endpoint for basic connectivity test
   app.get("/", (req, res) => {
     res.json({
@@ -68,6 +64,7 @@ export async function createApp() {
     });
   });
 
+  app.use("/health", healthRouter(AppDataSource));
   app.use("/lobbies", lobbiesRouter(AppDataSource));
   app.use("/players", playerRouter(AppDataSource));
   app.use("/clubs", clubRouter(AppDataSource));

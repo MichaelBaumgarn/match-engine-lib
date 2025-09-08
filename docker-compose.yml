@@ -1,19 +1,61 @@
-version: "3.9"
-
 services:
-  postgres:
-    image: postgres:13.16-alpine
-    restart: always
-    ports:
-      - "54323:5432"
-    environment:
-      POSTGRES_DB: match-store
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
-      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+  pg-serve:
+    image: postgres:17-alpine
     volumes:
-      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-      - db-data:/var/lib/postgresql/data
+      - ./postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=notices
+      - POSTGRES_INITDB_ARGS=--encoding=UTF8 --lc-collate=C --lc-ctype=C
+      - LANG=C.UTF-8
+    ports:
+      - "127.0.0.1:5438:5432"
+    restart: unless-stopped
+    networks:
+      - shared_ng
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: [ "postgres", "-c", "max_connections=200" ]
+
+  core-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:8081:8080"
+    environment:
+      - NODE_ENV=production
+      - PGHOST=pg-serve
+      - PGPORT=5432
+      - PGUSER=postgres
+      - PGPASSWORD=postgres
+      - PGDATABASE=notices
+      - PORT=8080
+    depends_on:
+      pg-serve:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - shared_ng
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  shared_ng:
+    name: shared_ng
 
 volumes:
-  db-data:
+  postgres-data:
