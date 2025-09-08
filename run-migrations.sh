@@ -49,15 +49,22 @@ fi
 
 echo "🗄️ Running database migrations..."
 
+# Set default environment variables from docker-compose.yml if not already set
+export PGHOST=${PGHOST:-"127.0.0.1"}
+export PGPORT=${PGPORT:-"54323"}
+export PGUSER=${PGUSER:-"postgres"}
+export PGPASSWORD=${PGPASSWORD:-"postgres"}
+export PGDATABASE=${PGDATABASE:-"match-store"}
+
 # Build connection string from environment variables
 if [ -n "$DATABASE_URL" ]; then
     DB_URL="$DATABASE_URL"
 else
     # Use individual variables
-    DB_URL="postgres://${PGUSER}:${PGPASSWORD}@${PGHOST}/${PGDATABASE}?sslmode=disable"
+    DB_URL="postgres://${PGUSER}:${PGPASSWORD}@${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode=disable"
 fi
 
-echo "📍 Using database: ${PGHOST}/${PGDATABASE}"
+echo "📍 Using database: ${PGHOST}:${PGPORT}/${PGDATABASE}"
 echo "🚀 Running migrations..."
 
 migrate -path ./migrations -database "$DB_URL" up
