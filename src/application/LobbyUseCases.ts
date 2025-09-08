@@ -104,4 +104,22 @@ export class LobbyUseCases {
     const store = new DbLobbyStore(this.ds.manager);
     return await store.getLobbiesByPlayerId(playerId);
   }
+
+  async deleteLobby(lobbyId: string): Promise<void> {
+    const qr = this.ds.createQueryRunner();
+    await qr.connect();
+    await qr.startTransaction();
+    try {
+      const store = new DbLobbyStore(qr.manager);
+      const lobby = await store.getLobby(lobbyId);
+      if (!lobby) throw new Error("Lobby not found");
+      await store.deleteLobby(lobbyId);
+      await qr.commitTransaction();
+    } catch (err) {
+      await qr.rollbackTransaction();
+      throw err;
+    } finally {
+      await qr.release();
+    }
+  }
 }
