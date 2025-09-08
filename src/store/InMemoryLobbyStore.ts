@@ -1,6 +1,6 @@
 import { LobbyStore } from "./LobbyStore";
 import { LobbyService } from "@/core";
-import { LobbyQueryService, LobbyFilters } from "../application/LobbyQueryService";
+import { LobbyQueryService, LobbyFilters } from "@/application";
 
 export class InMemoryLobbyStore implements LobbyStore {
   private store = new Map<string, LobbyService>();

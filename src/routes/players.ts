@@ -9,7 +9,7 @@ import {
   type CreatePlayer,
   type UpdatePlayer,
   type SupabasePlayer,
-} from "../schemas/player";
+} from "@/schemas";
 import crypto from "crypto";
 
 const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>

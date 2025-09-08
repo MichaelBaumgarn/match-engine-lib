@@ -2,7 +2,7 @@ import { EntityManager } from "typeorm";
 import { LobbyService, LobbyStatusEnum } from "@/core";
 import { LobbyEntity } from "../entities/LobbyEntity";
 import { SideSlotEntity } from "../entities/SideSlotEntity";
-import { LobbyQueryService, LobbyFilters } from "../application/LobbyQueryService";
+import { LobbyQueryService, LobbyFilters } from "@/application";
 
 export class DbLobbyStore {
   constructor(private manager: EntityManager) {}

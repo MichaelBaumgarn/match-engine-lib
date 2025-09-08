@@ -2,9 +2,8 @@ import { PlayerType } from "@/models";
 import crypto from "crypto";
 import { Request, Response, Router } from "express";
 import { DataSource } from "typeorm";
-import { serializeLobby, serializeLobbyWithPlayerDetails } from "../application/LobbySerializers";
-import { LobbyUseCases } from "../application/LobbyUseCases";
-import { createLobbySchema, joinLobbySchema, leaveLobbySchema, lobbyFiltersSchema } from "../schemas/lobby";
+import { serializeLobby, serializeLobbyWithPlayerDetails, LobbyUseCases } from "@/application";
+import { createLobbySchema, joinLobbySchema, leaveLobbySchema, lobbyFiltersSchema } from "@/schemas";
 import { DbLobbyStore, DbPlayerStore } from "@/store";
 
 export function lobbiesRouter(ds: DataSource) {

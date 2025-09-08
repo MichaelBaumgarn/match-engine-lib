@@ -1,5 +1,5 @@
 import { LobbyService } from "@/core";
-import { LobbyFilters } from "../application/LobbyQueryService";
+import { LobbyFilters } from "@/application";
 
 export interface LobbyStore {
   saveLobby(lobby: LobbyService): Promise<void>;
