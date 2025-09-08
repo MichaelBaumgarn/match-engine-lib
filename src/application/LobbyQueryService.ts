@@ -1,6 +1,6 @@
 import { EntityManager, SelectQueryBuilder } from "typeorm";
 import { LobbyService } from "@/core";
-import { LobbyEntity } from "../entities/LobbyEntity";
+import { LobbyEntity } from "@/entities";
 
 export interface LobbyFilters {
   status?: string;
