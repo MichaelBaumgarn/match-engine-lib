@@ -6,11 +6,11 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=notices
+      - POSTGRES_DB=match-store
       - POSTGRES_INITDB_ARGS=--encoding=UTF8 --lc-collate=C --lc-ctype=C
       - LANG=C.UTF-8
     ports:
-      - "127.0.0.1:5438:5432"
+      - "127.0.0.1:54323:5432"
     restart: unless-stopped
     networks:
       - shared_ng
@@ -33,7 +33,7 @@ services:
       - PGPORT=5432
       - PGUSER=postgres
       - PGPASSWORD=postgres
-      - PGDATABASE=notices
+      - PGDATABASE=match-store
       - PORT=8080
     depends_on:
       pg-serve:

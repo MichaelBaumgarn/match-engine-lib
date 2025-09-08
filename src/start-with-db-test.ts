@@ -1,7 +1,7 @@
 import { AppDataSource } from "./db/data-source";
 import express from "express";
 import cors from "cors";
-import lobbiesRouter from "./routes/lobbies";
+import { lobbiesRouter } from "./routes/lobbies";
 import { clubRouter } from "./routes/clubs";
 import { playerRouter } from "./routes/players";
 

@@ -2,6 +2,7 @@ import { EntityManager } from "typeorm";
 import { LobbyService, LobbyStatusEnum } from "@/core";
 import { LobbyEntity } from "../entities/LobbyEntity";
 import { SideSlotEntity } from "../entities/SideSlotEntity";
+import { LobbyQueryService, LobbyFilters } from "../application/LobbyQueryService";
 
 export class DbLobbyStore {
   constructor(private manager: EntityManager) {}
@@ -39,14 +40,10 @@ export class DbLobbyStore {
     await repo.delete(id);
   }
 
-  async listLobbies(): Promise<LobbyService[]> {
-    const repo = this.manager.getRepository(LobbyEntity);
-    const rows = await repo.find({
-      relations: {
-        sideSlots: true,
-        club: true,
-      },
-    });
+  async listLobbies(filters?: LobbyFilters): Promise<LobbyService[]> {
+    const queryService = new LobbyQueryService(this.manager);
+    const queryBuilder = queryService.buildQuery(filters);
+    const rows = await queryBuilder.getMany();
     return rows.map(entityToLobbyService);
   }
 

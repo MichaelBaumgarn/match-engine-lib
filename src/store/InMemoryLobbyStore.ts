@@ -1,5 +1,6 @@
 import { LobbyStore } from "./LobbyStore";
 import { LobbyService } from "@/core";
+import { LobbyQueryService, LobbyFilters } from "../application/LobbyQueryService";
 
 export class InMemoryLobbyStore implements LobbyStore {
   private store = new Map<string, LobbyService>();
@@ -16,8 +17,14 @@ export class InMemoryLobbyStore implements LobbyStore {
     this.store.delete(id);
   }
 
-  async listLobbies(): Promise<LobbyService[]> {
-    return Array.from(this.store.values());
+  async listLobbies(filters?: LobbyFilters): Promise<LobbyService[]> {
+    const lobbies = Array.from(this.store.values());
+    
+    if (!filters) {
+      return lobbies.sort((a, b) => a.startAt.getTime() - b.startAt.getTime());
+    }
+
+    return LobbyQueryService.filterInMemoryLobbies(lobbies, filters);
   }
 
   async getLobbiesByPlayerId(playerId: string): Promise<LobbyService[]> {

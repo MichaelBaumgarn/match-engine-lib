@@ -1,17 +1,16 @@
-import { Router, Request, Response } from "express";
-import { DataSource } from "typeorm";
-import crypto from "crypto";
-import { Side } from "@/core";
 import { PlayerType } from "@/models";
-import { LobbyUseCases } from "../application/LobbyUseCases";
+import crypto from "crypto";
+import { Request, Response, Router } from "express";
+import { DataSource } from "typeorm";
 import { serializeLobby, serializeLobbyWithPlayerDetails } from "../application/LobbySerializers";
-import { createLobbySchema, joinLobbySchema, leaveLobbySchema } from "../schemas/lobby";
-import { DbLobbyStore } from "../store/DbLobbyStore";
-import { DbPlayerStore } from "../store/DbPlayerStore";
+import { LobbyUseCases } from "../application/LobbyUseCases";
+import { createLobbySchema, joinLobbySchema, leaveLobbySchema, lobbyFiltersSchema } from "../schemas/lobby";
+import { DbLobbyStore, DbPlayerStore } from "@/store";
 
-export default function lobbiesRouter(ds: DataSource) {
+export function lobbiesRouter(ds: DataSource) {
   const router = Router();
   const useCases = new LobbyUseCases(ds);
+
 
   //MARK: Handlers
   async function createLobby(req: Request, res: Response) {
@@ -67,8 +66,16 @@ export default function lobbiesRouter(ds: DataSource) {
   async function listLobbies(req: Request, res: Response) {
     const store = new DbLobbyStore(ds.manager);
     const playerStore = new DbPlayerStore(ds.manager);
-    const lobbies = await store.listLobbies();
 
+    const filtersResult = lobbyFiltersSchema.safeParse(req.query);
+    if (!filtersResult.success) {
+      return res.status(400).json({
+        error: "Invalid query parameters",
+        details: filtersResult.error.issues,
+      });
+    }
+
+    const lobbies = await store.listLobbies(filtersResult.data);
     const includePlayers = req.query.includePlayers === "true";
 
     if (includePlayers) {

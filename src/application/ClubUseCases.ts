@@ -1,5 +1,5 @@
 import { DataSource } from "typeorm";
-import { DbClubStore } from "../store/DbClubStore";
+import { DbClubStore } from "@/store";
 import Club from "../models/Club";
 
 export class ClubUseCases {

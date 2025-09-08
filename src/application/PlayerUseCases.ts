@@ -1,5 +1,5 @@
 import { DataSource } from "typeorm";
-import { DbPlayerStore } from "../store/DbPlayerStore";
+import { DbPlayerStore } from "@/store";
 import { PlayerType } from "@/models";
 
 export class PlayerUseCases {

@@ -2,7 +2,7 @@
 import { DataSource } from "typeorm";
 import { LobbyService, Side } from "@/core";
 import { PlayerType } from "@/models";
-import { DbLobbyStore } from "../store/DbLobbyStore"; // <- your class that takes an EntityManager
+import { DbLobbyStore } from "@/store";
 
 export class LobbyUseCases {
   constructor(private ds: DataSource) {}

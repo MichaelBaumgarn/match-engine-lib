@@ -20,3 +20,12 @@ export const joinLobbySchema = z.object({
 export const leaveLobbySchema = z.object({
   playerId: z.string().uuid("Invalid playerId format"),
 });
+
+export const lobbyFiltersSchema = z.object({
+  status: z.string().optional(),
+  clubId: z.string().uuid().optional(),
+  createdBy: z.string().uuid().optional(),
+  startAfter: z.string().datetime().transform(val => new Date(val)).optional(),
+  startBefore: z.string().datetime().transform(val => new Date(val)).optional(),
+  availableOnly: z.enum(["true", "false"]).transform(val => val === "true").optional(),
+});

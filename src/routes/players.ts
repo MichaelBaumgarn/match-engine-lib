@@ -1,7 +1,6 @@
 import { Router, Request, Response } from "express";
 import { DataSource } from "typeorm";
-import { DbPlayerStore } from "../store/DbPlayerStore";
-import { DbClubStore } from "../store/DbClubStore";
+import { DbPlayerStore, DbClubStore } from "@/store";
 import { validateBody } from "../middleware/validation";
 import {
   CreatePlayerSchema,

@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { DataSource } from "typeorm";
-import { DbClubStore } from "../store/DbClubStore";
+import { DbClubStore } from "@/store";
 import Club from "../models/Club";
 
 const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>

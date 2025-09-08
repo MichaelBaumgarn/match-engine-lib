@@ -1,5 +1,5 @@
 import { LobbyService } from "@/core";
-import { DbPlayerStore } from "../store/DbPlayerStore";
+import { DbPlayerStore } from "@/store";
 
 export function serializeLobby(lobby: LobbyService) {
   return {

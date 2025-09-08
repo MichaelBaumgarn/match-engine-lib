@@ -12,7 +12,7 @@
     "start:test": "node dist/test-server.js",
     "start:with-db-test": "node dist/start-with-db-test.js",
     "test:db": "node dist/test-db.js",
-    "migrate:up": "node scripts/migrate.js",
+    "migrate:up": "PGHOST=localhost PGPORT=54323 PGUSER=postgres PGPASSWORD=postgres PGDATABASE=match-store node scripts/migrate.js",
     "migrate:down": "migrate -database \"postgres://postgres:postgres@localhost:54323/match-store?sslmode=disable\" -path migrations down",
     "migrate:version": "migrate -database \"postgres://postgres:postgres@localhost:54323/match-store?sslmode=disable\" -path migrations version",
     "migrate:wipe": "migrate -database \"postgres://postgres:postgres@localhost:54323/match-store?sslmode=disable\" -path migrations -verbose down",

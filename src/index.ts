@@ -1,10 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { AppDataSource } from "./db/data-source";
-import lobbiesRouter from "./routes/lobbies";
-import { clubRouter } from "./routes/clubs";
-import { playerRouter } from "./routes/players";
-import { healthRouter } from "./routes/health";
+import { lobbiesRouter, clubRouter, playerRouter, healthRouter } from "@/routes";
 
 export async function createApp() {
   // Debug environment variables (without sensitive data)
