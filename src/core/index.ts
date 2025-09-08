@@ -1,2 +1,2 @@
 export { HealthService } from "./HealthService";
-// export { LobbyService } from "./LobbyService";
+export { LobbyService, type Side, type Visibility, LOBBY_ERRORS, LobbyStatusEnum } from "./LobbyService";

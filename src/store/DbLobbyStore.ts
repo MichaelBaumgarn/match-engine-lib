@@ -1,5 +1,5 @@
 import { EntityManager } from "typeorm";
-import LobbyService, { LobbyStatusEnum } from "../core/LobbyService";
+import { LobbyService, LobbyStatusEnum } from "@/core";
 import { LobbyEntity } from "../entities/LobbyEntity";
 import { SideSlotEntity } from "../entities/SideSlotEntity";
 

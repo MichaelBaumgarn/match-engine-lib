@@ -1,4 +1,4 @@
-import LobbyService from "../core/LobbyService";
+import { LobbyService } from "@/core";
 
 export interface LobbyStore {
   saveLobby(lobby: LobbyService): Promise<void>;

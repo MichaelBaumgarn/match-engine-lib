@@ -1,7 +1,7 @@
 // application/LobbyUseCases.ts
 import { DataSource } from "typeorm";
-import LobbyService, { Side } from "../core/LobbyService";
-import Player from "../models/Player";
+import { LobbyService, Side } from "@/core";
+import { PlayerType } from "@/models";
 import { DbLobbyStore } from "../store/DbLobbyStore"; // <- your class that takes an EntityManager
 
 export class LobbyUseCases {
@@ -9,7 +9,7 @@ export class LobbyUseCases {
 
   async joinLobby(
     lobbyId: string,
-    player: Player,
+    player: PlayerType,
     side: Side
   ): Promise<LobbyService> {
     const qr = this.ds.createQueryRunner();
@@ -33,7 +33,7 @@ export class LobbyUseCases {
     }
   }
 
-  async leaveLobby(lobbyId: string, player: Player): Promise<LobbyService> {
+  async leaveLobby(lobbyId: string, player: PlayerType): Promise<LobbyService> {
     const qr = this.ds.createQueryRunner();
     await qr.connect();
     await qr.startTransaction();
@@ -57,7 +57,7 @@ export class LobbyUseCases {
 
   async createLobby(options: {
     lobbyId: string;
-    creator: Player;
+    creator: PlayerType;
     startAt: Date;
     durationMinutes: number;
     clubId?: string;

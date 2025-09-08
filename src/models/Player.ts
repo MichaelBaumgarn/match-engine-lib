@@ -8,4 +8,4 @@ type PlayerType = {
   city?: string | null;
 };
 
-export default PlayerType;
+export { PlayerType };

@@ -1,5 +1,5 @@
 import { LobbyStore } from "./LobbyStore";
-import LobbyService from "../core/LobbyService";
+import { LobbyService } from "@/core";
 
 export class InMemoryLobbyStore implements LobbyStore {
   private store = new Map<string, LobbyService>();
@@ -18,5 +18,11 @@ export class InMemoryLobbyStore implements LobbyStore {
 
   async listLobbies(): Promise<LobbyService[]> {
     return Array.from(this.store.values());
+  }
+
+  async getLobbiesByPlayerId(playerId: string): Promise<LobbyService[]> {
+    return Array.from(this.store.values()).filter(lobby => 
+      lobby.getAllPlayers.some(player => player.id === playerId)
+    );
   }
 }

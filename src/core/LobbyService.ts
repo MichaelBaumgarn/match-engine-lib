@@ -1,4 +1,4 @@
-import PlayerType from "../models/Player";
+import { PlayerType } from "@/models";
 import Club from "../models/Club";
 
 export const LOBBY_ERRORS = {
@@ -15,7 +15,7 @@ export enum LobbyStatusEnum {
 export type Side = "left" | "right";
 export type Visibility = "private" | "invite" | "public";
 
-class LobbyService {
+export class LobbyService {
   id: string;
   createdBy: PlayerType;
   maxPlayersBySide: number = 2;
@@ -101,4 +101,3 @@ class LobbyService {
     );
   }
 }
-export default LobbyService;

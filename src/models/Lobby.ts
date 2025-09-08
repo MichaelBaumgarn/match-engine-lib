@@ -1,4 +1,4 @@
-import PlayerType from "./Player";
+import { PlayerType } from "@/models";
 
 type Lobby = {
   id: number;

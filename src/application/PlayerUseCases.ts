@@ -1,11 +1,11 @@
 import { DataSource } from "typeorm";
 import { DbPlayerStore } from "../store/DbPlayerStore";
-import Player from "../models/Player";
+import { PlayerType } from "@/models";
 
 export class PlayerUseCases {
   constructor(private ds: DataSource) {}
 
-  async createPlayer(player: Player): Promise<void> {
+  async createPlayer(player: PlayerType): Promise<void> {
     const qr = this.ds.createQueryRunner();
     await qr.connect();
     await qr.startTransaction();
@@ -21,7 +21,7 @@ export class PlayerUseCases {
     }
   }
 
-  async updatePlayer(player: Player): Promise<void> {
+  async updatePlayer(player: PlayerType): Promise<void> {
     const qr = this.ds.createQueryRunner();
     await qr.connect();
     await qr.startTransaction();
@@ -53,12 +53,12 @@ export class PlayerUseCases {
     }
   }
 
-  async getPlayer(id: string): Promise<Player | null> {
+  async getPlayer(id: string): Promise<PlayerType | null> {
     const store = new DbPlayerStore(this.ds.manager);
     return await store.getById(id);
   }
 
-  async listPlayers(): Promise<Player[]> {
+  async listPlayers(): Promise<PlayerType[]> {
     const store = new DbPlayerStore(this.ds.manager);
     return await store.list();
   }

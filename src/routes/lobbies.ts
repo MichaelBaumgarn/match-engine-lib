@@ -1,12 +1,11 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { z } from "zod";
-
-import { DataSource } from "typeorm";
+import { LobbyService, Side } from "@/core";
+import { PlayerType } from "@/models";
 import crypto from "crypto";
-import LobbyService, { Side } from "../core/LobbyService";
-import { DbLobbyStore } from "../store/DbLobbyStore";
+import { Request, Response, Router } from "express";
+import { DataSource } from "typeorm";
+import { z } from "zod";
 import { LobbyUseCases } from "../application/LobbyUseCases";
-import Player from "../models/Player";
+import { DbLobbyStore } from "../store/DbLobbyStore";
 import { DbPlayerStore } from "../store/DbPlayerStore";
 
 const asyncHandler = (fn: any) => (req: any, res: any, next: any) =>
@@ -152,7 +151,7 @@ export default function lobbiesRouter(ds: DataSource) {
           .status(400)
           .json({ error: "side must be 'left' or 'right'" });
 
-      const player: Player = {
+      const player: PlayerType = {
         id: playerId,
         name: "?",
         skillLevel: "A1",
@@ -172,7 +171,7 @@ export default function lobbiesRouter(ds: DataSource) {
       if (!playerId)
         return res.status(400).json({ error: "playerId required" });
 
-      const player: Player = {
+      const player: PlayerType = {
         id: playerId,
         name: "?",
         skillLevel: "A1",
